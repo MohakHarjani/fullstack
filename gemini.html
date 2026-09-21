@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>60-Day Java Full Stack Master Tracker | Gurugram Tech Switch Prep</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        java: '#f89820',
+                        spring: '#6db33f',
+                        angular: '#dd0031',
+                        sysdesign: '#8b5cf6',
+                        sec: '#e11d48'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        code, pre {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.3);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen transition-colors duration-200 custom-scrollbar">
+
+    <!-- Top Nav Header -->
+    <header class="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-gradient-to-tr from-amber-500 via-sky-500 to-indigo-600 rounded-xl text-white shadow-lg shadow-sky-500/20">
+                    <i data-lucide="zap" class="w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold bg-gradient-to-r from-white via-slate-100 to-sky-400 bg-clip-text text-transparent">
+                        60-Day Java Full Stack Mastery Tracker
+                    </h1>
+                    <p class="text-xs text-slate-400">Targeting Gurugram Tech Switch | 3-5 YOE Level Intensive Prep</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+                <button id="exportBtn" onclick="exportData()" class="px-3.5 py-1.5 rounded-xl border border-slate-700 bg-slate-800/80 hover:bg-slate-800 text-xs text-slate-200 flex items-center gap-1.5 transition shadow-sm hover:border-slate-600">
+                    <i data-lucide="download" class="w-3.5 h-3.5 text-sky-400"></i> Export Markdown Notes
+                </button>
+                <button id="resetBtn" onclick="confirmReset()" class="px-3.5 py-1.5 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-xs text-red-300 flex items-center gap-1.5 transition">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Progress
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+        <!-- Stats Dashboard -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Overall Progress -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl relative overflow-hidden backdrop-blur-sm shadow-xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Overall Completion</p>
+                        <h3 id="overallPct" class="text-3xl font-extrabold text-white mt-1">0%</h3>
+                    </div>
+                    <div class="p-2.5 bg-sky-500/10 text-sky-400 rounded-xl border border-sky-500/20">
+                        <i data-lucide="activity" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-2 mt-4 overflow-hidden">
+                    <div id="overallProgressBar" class="bg-gradient-to-r from-sky-500 via-indigo-500 to-emerald-400 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Tasks Done -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl relative overflow-hidden backdrop-blur-sm shadow-xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Action Checklist</p>
+                        <h3 id="tasksCount" class="text-3xl font-extrabold text-white mt-1">0 / 180</h3>
+                    </div>
+                    <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20">
+                        <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-3"><span id="daysCompletedCount" class="text-emerald-400 font-bold">0</span> of 60 Days Completed</p>
+            </div>
+
+            <!-- Active Phase -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl relative overflow-hidden backdrop-blur-sm shadow-xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Active Focus Phase</p>
+                        <h3 id="activePhaseTitle" class="text-sm font-bold text-sky-400 mt-1 line-clamp-1">Phase 1: Java 17+ Core</h3>
+                    </div>
+                    <div class="p-2.5 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20">
+                        <i data-lucide="compass" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-3" id="activePhaseSub">Days 1 - 10 Core Engine</p>
+            </div>
+
+            <!-- Gurugram Market Readiness -->
+            <div class="bg-slate-900/80 border border-slate-800 p-4 rounded-2xl relative overflow-hidden backdrop-blur-sm shadow-xl">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Gurugram Switch Readiness</p>
+                        <h3 id="readinessStatus" class="text-base font-extrabold text-amber-400 mt-1">Level 0: Starting</h3>
+                    </div>
+                    <div class="p-2.5 bg-purple-500/10 text-purple-400 rounded-xl border border-purple-500/20">
+                        <i data-lucide="award" class="w-5 h-5"></i>
+                    </div>
+                </div>
+                <p class="text-xs text-slate-400 mt-3">Target Salary Tier: <span id="readinessScore" class="font-bold text-emerald-400">18 - 28 LPA</span></p>
+            </div>
+        </section>
+
+        <!-- Search and Filter Controls -->
+        <section class="bg-slate-900/60 border border-slate-800 p-4 rounded-2xl flex flex-col lg:flex-row gap-4 items-center justify-between shadow-md">
+            <!-- Search -->
+            <div class="relative w-full lg:w-96">
+                <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                <input type="text" id="searchInput" placeholder="Search HashMap, Signals, Kafka, Saga, OAuth2..." 
+                       class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-sky-500 transition placeholder-slate-500">
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
+                <!-- Status Filter -->
+                <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+                    <button onclick="setStatusFilter('all')" id="btnStatusAll" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-200 bg-slate-800">All</button>
+                    <button onclick="setStatusFilter('pending')" id="btnStatusPending" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200">Pending</button>
+                    <button onclick="setStatusFilter('completed')" id="btnStatusCompleted" class="filter-btn px-3 py-1.5 rounded-lg font-medium text-slate-400 hover:text-slate-200">Completed</button>
+                </div>
+
+                <!-- Phase Select Filter -->
+                <select id="phaseFilter" onchange="applyFilters()" class="bg-slate-950 border border-slate-800 text-xs text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-sky-500 max-w-full">
+                    <option value="all">All 8 Curriculum Phases (Days 1 - 60)</option>
+                    <option value="phase1">Phase 1: Java 17+ Core, JVM & Multithreading (Days 1-10)</option>
+                    <option value="phase2">Phase 2: Collections, Streams & DS Problem Solving (Days 11-18)</option>
+                    <option value="phase3">Phase 3: Spring Boot 3, JPA, Hibernate & SQL (Days 19-27)</option>
+                    <option value="phase4">Phase 4: Microservices, Kafka & Event Architecture (Days 28-36)</option>
+                    <option value="phase5">Phase 5: Angular 18+, RxJS, Signals & State (Days 37-45)</option>
+                    <option value="phase6">Phase 6: Full Stack Integration, Security & OAuth2 (Days 46-50)</option>
+                    <option value="phase7">Phase 7: LLD, System Design & Clean Architecture (Days 51-55)</option>
+                    <option value="phase8">Phase 8: Mock Drills & Gurugram Resume Alignment (Days 56-60)</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Curriculum Days Grid -->
+        <section id="daysContainer" class="space-y-4">
+            <!-- Rendered dynamically -->
+        </section>
+
+    </main>
+
+    <!-- Drawer / Modal for Code Notes -->
+    <div id="notesModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/90">
+                <div class="flex items-center gap-2.5">
+                    <div class="p-2 bg-sky-500/20 text-sky-400 rounded-xl">
+                        <i data-lucide="file-code" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 id="modalDayTitle" class="font-bold text-white text-base">Day Title</h3>
+                        <p class="text-xs text-slate-400">Under-the-hood Notes & Code Snippets</p>
+                    </div>
+                </div>
+                <button onclick="closeNotesModal()" class="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800 transition">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4 overflow-y-auto custom-scrollbar flex-1">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Core Learnings & Architectural Notes</label>
+                    <textarea id="modalNotesInput" rows="5" placeholder="Document what you learned today without AI reliance (e.g. key trade-offs, internal class hierarchies, memory layouts)..." 
+                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-sky-500 placeholder-slate-600 font-mono custom-scrollbar"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">Working Code Snippet / Solution</label>
+                    <textarea id="modalSnippetInput" rows="6" placeholder="// Paste your custom Java, TypeScript, Spring or SQL code here..." 
+                              class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-sky-300 focus:outline-none focus:border-sky-500 placeholder-slate-600 font-mono custom-scrollbar"></textarea>
+                </div>
+            </div>
+
+            <div class="px-6 py-3.5 border-t border-slate-800 bg-slate-900/80 flex justify-end gap-3">
+                <button onclick="closeNotesModal()" class="px-4 py-2 rounded-xl border border-slate-700 text-xs text-slate-300 hover:bg-slate-800 transition">Cancel</button>
+                <button onclick="saveModalNotes()" class="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-xs font-semibold text-white transition flex items-center gap-2 shadow-lg shadow-sky-600/20">
+                    <i data-lucide="save" class="w-4 h-4"></i> Save Notes
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Full 60-Day Curriculum Dataset
+        const curriculumData = [
+            // PHASE 1: JAVA 17+ CORE, JVM & MULTITHREADING (DAYS 1-10)
+            {
+                day: 1,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "JVM Architecture, Memory Management & Garbage Collection Deep Dive",
+                concept: "• JVM Memory structure: Heap (Young Gen: Eden, S0, S1; Old Gen) vs Metaspace (method metadata) vs Thread Stacks.\n• GC Collectors: Serial, Parallel, G1GC (Region-based, marking phases), ZGC / Shenandoah (ultra-low latency, concurrent compaction).\n• Object Allocation pipeline & TLAB (Thread-Local Allocation Buffers).",
+                task: "Write a program that intentionally causes OutOfMemoryError: Java heap space and OutOfMemoryError: Metaspace. Use jcmd / VisualVM to analyze heap dumps and identify leaking objects.",
+                oral: "What is the difference between Young Gen and Old Gen GC? How does G1GC achieve predictable pause times?",
+                tasksList: ["Simulate Heap and Metaspace OOMs", "Capture and analyze a Heap Dump using jcmd/jhat", "Configure G1GC parameters (-XX:+UseG1GC -XX:MaxGCPauseMillis)"]
+            },
+            {
+                day: 2,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Java Threading Model, ExecutorService & Thread Pool Tuning",
+                concept: "• Java Thread states: NEW, RUNNABLE, BLOCKED, WAITING, TIMED_WAITING, TERMINATED.\n• ThreadPoolExecutor internals: corePoolSize, maximumPoolSize, keepAliveTime, WorkQueue (ArrayBlockingQueue vs LinkedBlockingQueue vs SynchronousQueue), RejectedExecutionHandler strategies.\n• Thread Safety, synchronized block mechanics, Object Monitor locks.",
+                task: "Build a custom ThreadPoolExecutor with customized queue capacity and a custom RejectedExecutionHandler that logs and metrics rejected tasks.",
+                oral: "What happens when corePoolSize is full, maximumPoolSize is reached, and the work queue is filled?",
+                tasksList: ["Implement custom ThreadPoolExecutor", "Create 4 different RejectedExecutionHandlers", "Benchmark LinkedBlockingQueue vs SynchronousQueue performance"]
+            },
+            {
+                day: 3,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Locks, ReentrantLock, ReadWriteLock & Atomic Variables",
+                concept: "• Locks vs Synchronized: Fairness policies, tryLock with timeouts, interruptible locking.\n• ReentrantReadWriteLock: Multiple concurrent readers, single writer, lock downgrading.\n• Atomic classes (AtomicInteger, AtomicReference) and Compare-And-Swap (CAS) hardware instructions.",
+                task: "Build a thread-safe, high-concurrency Cache module using ReentrantReadWriteLock that permits concurrent reads but guarantees exclusive write updates.",
+                oral: "Explain Compare-And-Swap (CAS). Why are atomic variables faster than synchronized blocks under low-to-medium contention?",
+                tasksList: ["Code ReentrantReadWriteLock cached repository", "Implement Lock Downgrading pattern", "Compare performance: AtomicInteger vs Synchronized Counter"]
+            },
+            {
+                day: 4,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Asynchronous Programming with CompletableFuture",
+                concept: "• Non-blocking execution with supplyAsync, runAsync.\n• Chaining and composing: thenApply, thenCompose (flat mapping futures), thenCombine (combining independent futures).\n• Exception handling: exceptionally, handle, handleAsync, and timeout handling (orTimeout, completeOnTimeout).",
+                task: "Build an Async Aggregator service that fetches User Profile, Order History, and Payment Methods in parallel from 3 simulated slow remote APIs and aggregates them under a 800ms strict SLA.",
+                oral: "What is the difference between thenApply() and thenCompose() in CompletableFuture?",
+                tasksList: ["Build 3 parallel async API calls using CompletableFuture", "Combine results using thenCombine", "Handle timeouts with orTimeout and fallback defaults"]
+            },
+            {
+                day: 5,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Virtual Threads (Project Loom - Java 21) vs Platform Threads",
+                concept: "• Carrier Threads vs Virtual Threads: M:N scheduling over platform OS threads.\n• Thread unmounting on I/O blocking operations vs Pinning issues (synchronized blocks / native methods).\n• Scoped Values and Structured Concurrency preview.",
+                task: "Write a benchmark comparing 10,000 platform threads vs 10,000 Virtual Threads performing simulated HTTP/Database I/O blocking calls.",
+                oral: "What is thread pinning in Virtual Threads? How do you refactor synchronized code to avoid pinning?",
+                tasksList: ["Create Virtual Threads using Executors.newVirtualThreadPerTaskExecutor()", "Demonstrate thread pinning using synchronized vs ReentrantLock", "Benchmark throughput under high I/O concurrency"]
+            },
+            {
+                day: 6,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Modern Java 11-17 Features: Records, Sealed Classes & Pattern Matching",
+                concept: "• Records: Immutable data transparent carriers, canonical constructors, compact constructors.\n• Sealed Classes & Interfaces: Restricting class hierarchies with permits keyword.\n• Pattern Matching for instanceof and exhaustive switch expressions.",
+                task: "Design an Event-Driven domain hierarchy for an Order Processing pipeline using Sealed Interfaces, Records for events, and Pattern Matching switch statements.",
+                oral: "Why are Records preferred over Lombok @Value or @Data for immutable DTOs in modern Java?",
+                tasksList: ["Create sealed domain interface hierarchy", "Implement record components with compact validation", "Refactor if-else instanceof chains to pattern matching switch"]
+            },
+            {
+                day: 7,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Java Memory Model (JMM), Volatile, Instruction Reordering & Happens-Before",
+                concept: "• JMM Abstraction: CPU Caches, L1/L2/L3, Main Memory, Store Buffers.\n• volatile keyword: Guarantees visibility and prevents instruction reordering via memory barriers/fences.\n• Happens-Before relationship rules (Program order, Monitor lock, Volatile variable, Thread start/join).",
+                task: "Create a code scenario demonstrating visibility problem without volatile, then fix it using volatile and explain generated assembly/memory fence behavior.",
+                oral: "Does the volatile keyword guarantee atomicity for operations like count++? Why or why not?",
+                tasksList: ["Reproduce thread visibility flag issue", "Fix using volatile keyword", "Write explanation of Happens-Before guarantees"]
+            },
+            {
+                day: 8,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Java Exception Handling Mechanics & Custom Exception Framework",
+                concept: "• Throwable hierarchy: Error vs Exception (Checked vs Unchecked).\n• Exception suppression (try-with-resources AutoCloseable), stack trace overhead.\n• Best practices: Domain-specific exceptions, avoiding catching Throwable/Error.",
+                task: "Design a enterprise-ready Custom Exception hierarchy (BaseDomainException, ResourceNotFoundException, UnauthorizedException) with error codes and context payload maps.",
+                oral: "How does try-with-resources handle suppressed exceptions when both the try block and close() throw exceptions?",
+                tasksList: ["Implement AutoCloseable custom resource", "Verify suppressed exception extraction using getSuppressed()", "Create custom hierarchical exception classes"]
+            },
+            {
+                day: 9,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Reflection API, Annotations & Dynamic Proxies",
+                concept: "• Reflection runtime inspection of classes, methods, private fields.\n• Custom Annotations (@Retention, @Target, @Inherited).\n• Dynamic Proxies (java.lang.reflect.Proxy) vs Bytecode generation (CGLIB, ByteBuddy).",
+                task: "Build a lightweight custom AOP framework using Java Dynamic Proxy that intercepts interface method calls and measures execution latency.",
+                oral: "What is the difference between JDK Dynamic Proxy and CGLIB Proxy used by Spring framework?",
+                tasksList: ["Define custom runtime annotation @Timed", "Implement InvocationHandler for dynamic proxy", "Intercept method calls and print execution metrics"]
+            },
+            {
+                day: 10,
+                phase: "phase1",
+                phaseTitle: "Phase 1: Java 17+ Core, JVM Architecture & Multithreading (Days 1 - 10)",
+                title: "Phase 1 Consolidation & Live Coding Challenge",
+                concept: "• Comprehensive review of Core Java, JVM internals, Threads, Concurrency, Records & Java 17 features.",
+                task: "Build a multi-threaded In-Memory Task Scheduler engine without using ScheduledExecutorService. Implement thread safety, priority queue ordering, and exception resilience.",
+                oral: "Walk me through how you engineered thread safety and concurrency control in your custom Task Scheduler.",
+                tasksList: ["Code custom Task Scheduler from scratch", "Write unit tests simulating concurrent task submissions", "Perform code review without AI assistance"]
+            },
+
+            // PHASE 2: COLLECTIONS, STREAMS & DS PROBLEM SOLVING (DAYS 11-18)
+            {
+                day: 11,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "HashMap & ConcurrentHashMap Internal Mechanics",
+                concept: "• HashMap: Array of Nodes (buckets), hash code spread function, bin index calculation (hash & (n-1)), treeification threshold (8), untreeify threshold (6).\n• ConcurrentHashMap: Segment locks (Java 7) vs CAS + synchronized on bin head node (Java 8+), ConcurrentHashMap size computation via CounterCell.",
+                task: "Write a custom HashMap class from scratch with put(), get(), remove(), rehashing logic, and bucket array resizing.",
+                oral: "Why does HashMap capacity always stay a power of 2? How does hash collision resolution work?",
+                tasksList: ["Code custom MyHashMap implementation", "Verify bucket collision handling via custom hashCode()", "Implement dynamic resizing when load factor > 0.75"]
+            },
+            {
+                day: 12,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "List, Set & Queue Implementations: ArrayList, LinkedList, TreeSet & PriorityQueue",
+                concept: "• ArrayList dynamic resizing array grow strategy (oldCapacity + (oldCapacity >> 1)).\n• TreeSet / TreeMap Red-Black tree balanced BST guarantees O(log N).\n• PriorityQueue Binary Heap mechanics (siftUp, siftDown) O(log N) insertion/deletion.",
+                task: "Implement a K-Most Frequent Elements finder using PriorityQueue (Min-Heap) and HashMap in O(N log K) time complexity.",
+                oral: "When would you choose ArrayList over LinkedList in enterprise applications?",
+                tasksList: ["Code Top-K Frequent elements using PriorityQueue", "Compare iteration times of ArrayList vs LinkedList", "Implement custom Comparator for TreeSet sorting"]
+            },
+            {
+                day: 13,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "Java Streams API Pipeline, Spliterators & Custom Collectors",
+                concept: "• Stream Lifecycle: Source -> Intermediate Operations (lazy) -> Terminal Operation (eager).\n• Stream short-circuiting (anyMatch, findFirst).\n• Custom Collectors using Collector.of(supplier, accumulator, combiner, finisher).",
+                task: "Write a custom Stream Collector that collects a stream of transactions into a Map<Currency, TransactionSummary> calculating count, min, max, average, and total amount in a single pass.",
+                oral: "How does Stream parallelization work under the hood using ForkJoinPool.commonPool()?",
+                tasksList: ["Write custom Collector for TransactionSummary", "Compare sequential vs parallel stream performance", "Avoid side-effects in stream lambda pipelines"]
+            },
+            {
+                day: 14,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "Advanced Stream Manipulations: GroupingBy, PartitioningBy & FlatMap",
+                concept: "• Multi-level Collectors.groupingBy with downstream collectors (mapping, counting, maxBy).\n• FlatMap flattening nested collections.\n• Optional chaining and avoiding Optional.get().",
+                task: "Given a complex JSON-like dataset of Employees with Departments and Projects, write 5 complex functional Stream queries aggregating metrics.",
+                oral: "What is the difference between Collectors.groupingBy() and Collectors.partitioningBy()?",
+                tasksList: ["Execute multi-level groupingBy queries", "Use flatMap to flatten nested Project lists", "Replace Optional.get() with orElseThrow / map / flatMap"]
+            },
+            {
+                day: 15,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "Arrays, Strings & Two-Pointer / Sliding Window Algorithms",
+                concept: "• Memory locality of Arrays.\n• Two-Pointer technique for sorted array searches and array reversals.\n• Fixed and Variable length Sliding Window pattern.",
+                task: "Solve 'Longest Substring Without Repeating Characters' and '3Sum' algorithm problems on paper and in Java manually without AI.",
+                oral: "Explain how the Sliding Window algorithm reduces time complexity from O(N^2) to O(N).",
+                tasksList: ["Code Sliding Window for Substring problem", "Code Two-Pointer solution for 3Sum", "Write time & space complexity proofs"]
+            },
+            {
+                day: 16,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "LinkedList & Stack / Queue High-Frequency Coding Problems",
+                concept: "• Fast & Slow pointer (Floyd's Cycle Detection).\n• Stack LIFO for Expression Evaluation / Monotonic Stack.\n• Queue FIFO for Level Order Traversals.",
+                task: "Implement Reverse a Sub-LinkedList and Daily Temperatures (Monotonic Stack) algorithms.",
+                oral: "How do you detect and find the starting node of a cycle in a LinkedList?",
+                tasksList: ["Code Floyd's Cycle Detection algorithm", "Code Monotonic Stack solution", "Verify edge cases (null nodes, single element)"]
+            },
+            {
+                day: 17,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "Tree Traversals & Graph BFS / DFS Basics",
+                concept: "• Binary Tree Level Order Traversal (BFS using Queue).\n• Depth First Search (Inorder, Preorder, Postorder recursively & iteratively).\n• Graph Representation: Adjacency List vs Adjacency Matrix.",
+                task: "Implement Binary Tree Lowest Common Ancestor (LCA) and Graph Number of Islands (DFS traversal).",
+                oral: "Compare BFS vs DFS in terms of memory complexity for wide vs deep trees.",
+                tasksList: ["Code Tree Level Order Traversal", "Code Graph DFS Number of Islands", "Analyze call stack depth limit risks"]
+            },
+            {
+                day: 18,
+                phase: "phase2",
+                phaseTitle: "Phase 2: Collections, Functional Streams & Problem Solving (Days 11 - 18)",
+                title: "Phase 2 Evaluation: DS & Stream Coding Assessment",
+                concept: "• Timed hands-on problem solving covering HashMap, Streams, Algorithms & Complexity Analysis.",
+                task: "Implement a fully working Least Recently Used (LRU) Cache using HashMap and Custom Doubly LinkedList with O(1) time complexity for get and put operations.",
+                oral: "Walk through every line of your LRU Cache implementation and explain why LinkedList node references are needed alongside the HashMap.",
+                tasksList: ["Code LRU Cache with custom Doubly LinkedList", "Write unit tests verifying eviction order", "Optimize code for zero memory leak references"]
+            },
+
+            // PHASE 3: SPRING BOOT 3, JPA, HIBERNATE & SQL (DAYS 19-27)
+            {
+                day: 19,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Spring Core Mechanics: IoC Container, Bean Factory & Bean Lifecycle",
+                concept: "• ApplicationContext vs BeanFactory.\n• Bean Lifecycle: Instantiation -> Populate Properties -> BeanNameAware -> BeanFactoryAware -> PostProcessBeforeInitialization -> @PostConstruct -> InitializingBean -> Custom Init -> PostProcessAfterInitialization -> Ready -> @PreDestroy -> DisposableBean.\n• Circular Dependencies & Lazy Initialization.",
+                task: "Create a custom BeanPostProcessor that inspects Spring Beans and automatically wraps methods annotated with custom @AuditLog annotation.",
+                oral: "Explain the complete Spring Bean Lifecycle from instantiation to destruction.",
+                tasksList: ["Implement custom BeanPostProcessor", "Log lifecycle phase prints to console", "Demonstrate resolution of Circular Dependency using @Lazy"]
+            },
+            {
+                day: 20,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Spring Boot 3 Internals & Auto-Configuration Mechanics",
+                concept: "• @SpringBootApplication composite annotation (@SpringBootConfiguration, @EnableAutoConfiguration, @ComponentScan).\n• Auto-configuration registration via META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports.\n• Conditional Annotations: @ConditionalOnProperty, @ConditionalOnClass, @ConditionalOnMissingBean.",
+                task: "Build a custom Spring Boot Starter module ('tenant-resolver-spring-boot-starter') that auto-configures a Multi-Tenant context filter when a specific property is active.",
+                oral: "How does Spring Boot's auto-configuration mechanism discover and register beans conditionally?",
+                tasksList: ["Create standalone AutoConfiguration class", "Write spring.imports configuration file", "Test starter in a separate Spring Boot project"]
+            },
+            {
+                day: 21,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Spring Data JPA Entity Mapping & Cascade / Fetch Strategies",
+                concept: "• JPA Annotations: @Entity, @Table, @Id, @GeneratedValue, @OneToMany, @ManyToOne, @ManyToMany.\n• FetchType.LAZY vs FetchType.EAGER & LazyInitializationException causes.\n• Cascade Types (ALL, PERSIST, MERGE, REMOVE) & orphanRemoval=true.",
+                task: "Design an Order and OrderItem entity relationship. Demonstrate LazyInitializationException when accessing items outside transactional boundary and fix it.",
+                oral: "Why is FetchType.LAZY strongly recommended for all associations by default?",
+                tasksList: ["Define parent-child JPA entities", "Reproduce LazyInitializationException intentionally", "Fix using transaction boundary and DTO projection"]
+            },
+            {
+                day: 22,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Hibernate N+1 Select Problem & Advanced Fetch Optimization",
+                concept: "• The N+1 Query Problem: N additional SELECT queries executed for child collections.\n• Solutions: JOIN FETCH in JPQL, @EntityGraph, Hibernate Batch Fetching (@BatchSize).\n• Projections: Interface-based projections vs Class-based DTO constructors.",
+                task: "Build a REST endpoint fetching 100 Orders. Enable SQL logging (show-sql: true) to demonstrate N+1 queries. Resolve it using JPQL JOIN FETCH and @EntityGraph.",
+                oral: "What is the Hibernate N+1 select problem? Compare JOIN FETCH vs @EntityGraph vs @BatchSize.",
+                tasksList: ["Reproduce 101 queries for 100 records", "Fix using JPQL JOIN FETCH", "Fix using @EntityGraph annotation and compare generated SQL"]
+            },
+            {
+                day: 23,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Spring Transaction Management: @Transactional Internals & Propagation",
+                concept: "• AOP Proxy-based Transaction Management.\n• Transaction Propagation: REQUIRED, REQUIRES_NEW, NESTED, SUPPORTS, MANDATORY, NEVER, NOT_SUPPORTED.\n• Isolation Levels: READ_UNCOMMITTED, READ_COMMITTED, REPEATABLE_READ, SERIALIZABLE.\n• Transaction Rollback rules (Checked vs Unchecked exceptions, rollbackFor attribute).",
+                task: "Write an integration test demonstrating that calling an internal @Transactional method from the same class bypasses the AOP proxy and ignores propagation.",
+                oral: "Why does self-invocation of a @Transactional method fail to start a new transaction?",
+                tasksList: ["Test REQUIRED vs REQUIRES_NEW propagation", "Reproduce self-invocation proxy bypass issue", "Fix self-invocation using self-injection or separate service bean"]
+            },
+            {
+                day: 24,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "SQL Query Tuning, Indexing & Database Query Execution Plans",
+                concept: "• B-Tree Indexes vs Hash Indexes vs Composite Indexes.\n• Index selectivity, Covering Indexes, Index Scan vs Index Seek.\n• Analyzing Execution Plans (EXPLAIN ANALYZE) to identify Sequential Scans and missing indexes.",
+                task: "Generate 100,000 mock records in PostgreSQL/MySQL. Write an un-indexed query, run EXPLAIN ANALYZE, create a composite index, and re-run EXPLAIN ANALYZE to prove speedup.",
+                oral: "What is Index Selectivity? Why can an index degrade INSERT and UPDATE performance?",
+                tasksList: ["Populate database with 100,000 rows", "Run EXPLAIN ANALYZE before index creation", "Create composite B-Tree index and measure latency drop"]
+            },
+            {
+                day: 25,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Advanced SQL: Window Functions, CTEs & Complex Joins",
+                concept: "• SQL Window Functions: ROW_NUMBER(), RANK(), DENSE_RANK(), LEAD(), LAG(), OVER(PARTITION BY ... ORDER BY ...).\n• Common Table Expressions (CTE - WITH clause) and Recursive CTEs.\n• INNER, LEFT OUTER, RIGHT OUTER, FULL OUTER, CROSS joins.",
+                task: "Write a SQL query using DENSE_RANK() to find the 3rd highest-paid employee in each department without subqueries.",
+                oral: "What is the difference between RANK() and DENSE_RANK() in SQL?",
+                tasksList: ["Write DENSE_RANK() query for top earners per department", "Write CTE query for multi-step data transformation", "Test LEAD/LAG for analyzing month-over-month sales growth"]
+            },
+            {
+                day: 26,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Spring AOP (Aspect-Oriented Programming) & Custom Annotations",
+                concept: "• AspectJ concepts: Aspect, JoinPoint, Pointcut expressions (execution, annotation, args), Advice types (@Before, @After, @AfterReturning, @AfterThrowing, @Around).\n• Aspect Execution Order (@Order).",
+                task: "Build an Enterprise Rate-Limiting Aspect using Spring AOP and Redis/In-Memory Bucket that limits API access per IP address.",
+                oral: "How does @Around advice work? Why must ProceedingJoinPoint.proceed() be invoked?",
+                tasksList: ["Implement @Aspect class with @Around advice", "Define custom pointcut expression targeting custom @RateLimit annotation", "Test rate limit blocking behavior"]
+            },
+            {
+                day: 27,
+                phase: "phase3",
+                phaseTitle: "Phase 3: Spring Boot 3, JPA, Hibernate & Database Tuning (Days 19 - 27)",
+                title: "Phase 3 Assessment: Spring Boot & Database Architecture Drill",
+                concept: "• End-to-end integration of Spring Boot, Custom Starter, JPA Optimization, Transactions & Advanced SQL.",
+                task: "Build a production-grade Banking Transfer REST API with atomic balance updates, strict transaction isolation, custom locking (@Version Optimistic Locking), and SQL execution metrics.",
+                oral: "How do Optimistic Locking (@Version) and Pessimistic Locking (PESSIMISTIC_WRITE) prevent Lost Updates in concurrent environments?",
+                tasksList: ["Implement @Version optimistic locking on Account entity", "Write concurrent multi-threaded transfer test", "Verify StaleObjectStateException handling"]
+            },
+
+            // PHASE 4: MICROSERVICES, KAFKA & EVENT ARCHITECTURE (DAYS 28-36)
+            {
+                day: 28,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Microservices Architecture Patterns & Service Discovery",
+                concept: "• Monolith vs Microservices trade-offs.\n• Service Discovery Pattern (Eureka Server / Client registration and heartbeats).\n• Client-side load balancing (Spring Cloud LoadBalancer).",
+                task: "Set up a Spring Cloud Eureka Server and 2 Microservices (Order-Service and Product-Service) registering dynamically with Eureka.",
+                oral: "How does Service Discovery work? What happens when a service instance fails to send heartbeats?",
+                tasksList: ["Configure Spring Cloud Netflix Eureka Server", "Register 2 Spring Boot microservices", "Verify dynamic instance resolution"]
+            },
+            {
+                day: 29,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "API Gateway Pattern: Spring Cloud Gateway",
+                concept: "• API Gateway responsibilities: Routing, Centralized Auth, Rate Limiting, CORS, Metrics.\n• Gateway Routing predicates and filters (AddRequestHeader, RewritePath, Global Filter).",
+                task: "Build a Spring Cloud Gateway service that routes /api/orders/** to Order-Service and /api/products/** to Product-Service with custom execution time logging filter.",
+                oral: "Why is an API Gateway essential in Microservices architecture? How does it differ from a Reverse Proxy like Nginx?",
+                tasksList: ["Configure Spring Cloud Gateway route definitions", "Implement custom GlobalFilter for request correlation IDs", "Test dynamic path routing"]
+            },
+            {
+                day: 30,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Inter-Service Communication: Declarative OpenFeign & Fallbacks",
+                concept: "• Synchronous inter-service REST calls using Spring Cloud OpenFeign.\n• Feign Configuration (Custom decoders, encoders, request interceptors for propagating Auth headers).",
+                task: "Configure OpenFeign in Order-Service to call Product-Service. Write a Feign RequestInterceptor to automatically propagate incoming JWT Bearer tokens.",
+                oral: "How do you pass security contexts/JWT tokens across inter-service Feign calls?",
+                tasksList: ["Implement @FeignClient interface", "Create RequestInterceptor to append Authorization header", "Test Feign error decoder for mapping HTTP 4xx/5xx responses"]
+            },
+            {
+                day: 31,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Resilience4j: Circuit Breakers, Rate Limiters & Retries",
+                concept: "• Circuit Breaker States: CLOSED (normal), OPEN (failing, fast-fail), HALF-OPEN (testing recovery).\n• Resilience4j annotations: @CircuitBreaker, @Retry, @RateLimiter, @Bulkhead.\n• Sliding window metrics (Count-based vs Time-based).",
+                task: "Wrap OpenFeign calls with Resilience4j Circuit Breaker. Implement a Fallback method returning cached product data when Product-Service drops.",
+                oral: "Walk through the state transitions of a Resilience4j Circuit Breaker.",
+                tasksList: ["Configure Resilience4j sliding window properties", "Implement fallback method with matching method signature", "Simulate service failure and observe transition to OPEN state"]
+            },
+            {
+                day: 32,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Apache Kafka Core Architecture: Topics, Partitions & Consumer Groups",
+                concept: "• Kafka Cluster: Brokers, Topics, Partitions, Offsets, Replication Factor, Leader/Follower partitions.\n• Consumer Groups: Partition assignment, rebalancing protocol.\n• Message Keys and guarantees (Ordering within partition).",
+                task: "Set up Kafka locally using Docker Compose. Create a topic with 3 partitions and produce/consume messages using Kafka CLI and Spring Kafka.",
+                oral: "How does Kafka guarantee message ordering? What happens when consumer count exceeds partition count in a group?",
+                tasksList: ["Spin up Kafka & Zookeeper/KRaft via Docker", "Create multi-partition topic", "Verify key-based partition routing"]
+            },
+            {
+                day: 33,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Spring Kafka Integration: Producers, Consumers & Error Handling",
+                concept: "• KafkaTemplate async sending with CompletableFuture callbacks.\n• @KafkaListener annotation, ConsumerRecord, Acknowledgment modes (MANUAL_IMMEDIATE).\n• Error handling: Dead Letter Topics (DLT), DefaultErrorHandler with retry backoff.",
+                task: "Build an Event Producer in Order-Service and an Event Consumer in Notification-Service. Implement a Dead Letter Topic (DLT) retry handler for failed messages.",
+                oral: "How do you handle message processing failures in Kafka consumers without blocking partition processing?",
+                tasksList: ["Implement KafkaTemplate producer with delivery callbacks", "Implement @KafkaListener with manual ACK", "Configure DLT (Dead Letter Topic) retry handler"]
+            },
+            {
+                day: 34,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Distributed Transactions: Saga Pattern & Transactional Outbox Pattern",
+                concept: "• Dual-write problem (DB + Kafka publish inconsistency).\n• Saga Pattern: Choreography-based vs Orchestration-based Saga.\n• Transactional Outbox Pattern: Saving event to Outbox DB table in same local transaction, then polling/CDC (Debezium) to publish.",
+                task: "Implement the Transactional Outbox Pattern in Spring Boot: Insert Order and OutboxEvent in one transaction, then publish to Kafka using a scheduled poller.",
+                oral: "What is the Dual-Write problem in microservices? How does the Transactional Outbox pattern solve it?",
+                tasksList: ["Create Outbox DB entity and repository", "Implement atomic DB write + Outbox event save", "Write Outbox poller publisher with thread locks"]
+            },
+            {
+                day: 35,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Distributed Tracing & Observability: Micrometer, Zipkin/Jaeger & Prometheus",
+                concept: "• Distributed Tracing concepts: Trace ID, Span ID, Parent Span ID.\n• Micrometer Tracing (Spring Boot 3 replacing Spring Cloud Sleuth) + Zipkin.\n• Actuator endpoints, Prometheus metrics exporter.",
+                task: "Integrate Micrometer Tracing into API Gateway and 2 Microservices. Trace a single incoming HTTP request across Gateway -> Order-Service -> Kafka -> Notification-Service in Zipkin UI.",
+                oral: "How do Trace IDs propagate across synchronous HTTP calls and asynchronous Kafka events?",
+                tasksList: ["Add Micrometer Tracing & Zipkin reporter dependencies", "Run Zipkin container in Docker", "Trace end-to-end request lifecycle across services"]
+            },
+            {
+                day: 36,
+                phase: "phase4",
+                phaseTitle: "Phase 4: Microservices, Kafka & Event Architecture (Days 28 - 36)",
+                title: "Phase 4 Assessment: Complete Event-Driven Microservices Suite",
+                concept: "• Synthesis of Gateway, Eureka, Resilience4j, Kafka, Saga Outbox & Distributed Tracing.",
+                task: "Review and refine your complete Microservices cluster. Test killing individual services and verify fallback responses, Kafka retry queues, and trace logs.",
+                oral: "Walk me through the failure handling strategy of your microservices architecture if Kafka goes down.",
+                tasksList: ["Execute end-to-end resiliency test", "Verify Kafka Dead Letter Queue message routing", "Present architecture diagram"]
+            },
+
+            // PHASE 5: ANGULAR 18+, RXJS, SIGNALS & STATE (DAYS 37-45)
+            {
+                day: 37,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Modern Angular Architecture: Standalone Components & Control Flow",
+                concept: "• Standalone Components, Directives, Pipes (imports array replacing NgModules).\n• New Angular Built-in Control Flow Syntax: @if, @else, @for (with required track clause), @switch.\n• Component Inputs / Outputs (input(), output() functions).",
+                task: "Build a modern Angular Standalone Component app implementing dynamic multi-column data table using @for (track item.id) and @if syntax.",
+                oral: "What are the key advantages of Standalone Components and the new built-in Control Flow syntax in modern Angular?",
+                tasksList: ["Create Standalone component structure", "Refactor *ngFor / *ngIf to modern @for / @if", "Use input() and output() signal APIs"]
+            },
+            {
+                day: 38,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Angular Signals Core Deep Dive: signal(), computed(), effect()",
+                concept: "• What are Signals? Fine-grained reactivity model independent of Zone.js.\n• Writable Signals (signal(val), set(), update()).\n• Computed Signals (computed(() => val())) - memoized, read-only.\n• Side Effects with effect().",
+                task: "Build a Shopping Cart calculation engine using Angular Signals. Compute subtotal, tax, discount, and grand total dynamically using computed() signals.",
+                oral: "How do Angular Signals differ from RxJS Observables? When would you use Signals vs Observables?",
+                tasksList: ["Create signal-based Shopping Cart service", "Implement computed() signals for dynamic price formulas", "Use effect() to sync cart state to localStorage"]
+            },
+            {
+                day: 39,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "RxJS Deep Dive: Observables, Subjects & Core Operators",
+                concept: "• Observable stream push-model vs Pull-model functions.\n• Cold Observables vs Hot Observables.\n• Subject vs BehaviorSubject vs ReplaySubject vs AsyncSubject.\n• Core Transformation operators: map, filter, scan, tap.",
+                task: "Build a live Notification Stream service using BehaviorSubject that maintains unread count and allows multiple components to subscribe/unsubscribe dynamically.",
+                oral: "Compare Subject, BehaviorSubject, and ReplaySubject with concrete usage scenarios.",
+                tasksList: ["Implement Notification Service with BehaviorSubject", "Demonstrate late-subscriber behavior with ReplaySubject", "Write clean unsubscription logic"]
+            },
+            {
+                day: 40,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "RxJS Higher-Order Mapping Operators: switchMap, mergeMap, concatMap, exhaustMap",
+                concept: "• Higher-Order Observables (Observables emitting Observables).\n• switchMap: Cancels previous inner Observable (ideal for Typeahead / Search).\n• mergeMap: Concurrent inner Observables (ideal for parallel operations).\n• concatMap: Sequential inner Observables (preserves ordering).\n• exhaustMap: Ignores new emissions while inner Observable runs (ideal for Submit buttons).",
+                task: "Build an Auto-Complete Live Search component that handles user input keystrokes using debounceTime(300), distinctUntilChanged(), and switchMap() to call API.",
+                oral: "Explain the exact difference between switchMap, mergeMap, concatMap, and exhaustMap.",
+                tasksList: ["Build Auto-Complete Search with switchMap", "Build sequential queue uploader with concatMap", "Prevent double submit clicks with exhaustMap"]
+            },
+            {
+                day: 41,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Angular Reactive Forms, Custom Async Validators & FormArray",
+                concept: "• Reactive Forms vs Template-Driven Forms.\n• FormGroup, FormControl, FormArray dynamic controls.\n• Custom Synchronous Validators & Async Validators (calling backend API to verify uniqueness).",
+                task: "Build a dynamic Multi-Step User Registration Form with a FormArray for adding dynamic addresses and an Async Validator checking email availability against API.",
+                oral: "How do Async Validators work in Angular Reactive Forms? How do you prevent premature async validation triggers?",
+                tasksList: ["Construct nested Reactive FormGroup with FormArray", "Write custom Async Validator for email check", "Display field-level validation errors"]
+            },
+            {
+                day: 42,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Angular Routing, Functional Guards, Resolvers & Lazy Loading",
+                concept: "• Router configuration, Lazy loading standalone components (loadComponent: () => import(...)).\n• Functional Route Guards: CanActivateFn, CanDeactivateFn, CanMatchFn.\n• Route Resolvers (resolveFn) for pre-fetching page data.",
+                task: "Implement an Auth Guard (checking JWT presence) and a PendingChangesGuard (preventing accidental tab close with unsaved form state) using Functional Guards.",
+                oral: "What is CanMatchFn guard and how does it differ from CanActivateFn in Angular lazy loading?",
+                tasksList: ["Set up Lazy Loaded route configuration", "Implement functional CanActivateFn Auth Guard", "Implement CanDeactivateFn for dirty forms"]
+            },
+            {
+                day: 43,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Angular HTTP Interceptors & Global Error Handling Architecture",
+                concept: "• Functional HTTP Interceptors (HttpInterceptorFn).\n• Attaching Bearer tokens, token refresh queues, HTTP retry logic.\n• Custom Global ErrorHandler implementation.",
+                task: "Write a functional HttpInterceptor that attaches JWT tokens, catches 401 Unauthorized to trigger silent refresh token call, and handles global HTTP errors gracefully.",
+                oral: "How do you handle 401 Unauthorized errors in an Angular Interceptor to refresh tokens without infinite loops?",
+                tasksList: ["Implement functional HttpInterceptorFn", "Add JWT authorization header injection", "Handle 401 response and route to login"]
+            },
+            {
+                day: 44,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Angular Performance Optimization: OnPush, TrackBy & Zone.js Opt-Out",
+                concept: "• Change Detection Strategy: Default vs OnPush.\n• Immutability requirements for OnPush components.\n• Zone-less Angular / Zoneless application preview using Signals.",
+                task: "Refactor a laggy 1,000-row list component to use ChangeDetectionStrategy.OnPush, immutable state updates, and tracking keys in @for.",
+                oral: "How does ChangeDetectionStrategy.OnPush work? How does Angular know when to run change detection for an OnPush component?",
+                tasksList: ["Enable ChangeDetectionStrategy.OnPush on list component", "Refactor state updates to immutable copies", "Measure change detection cycle trigger drops"]
+            },
+            {
+                day: 45,
+                phase: "phase5",
+                phaseTitle: "Phase 5: Angular 18+, RxJS, Signals & State Management (Days 37 - 45)",
+                title: "Phase 5 Assessment: Advanced Angular Frontend Application",
+                concept: "• End-to-end integration of Angular Standalone Components, Signals, RxJS, Reactive Forms, Guards & Interceptors.",
+                task: "Build a production-level Enterprise Dashboard with live filtered tables, Signal cart store, functional route guards, and HTTP interceptors.",
+                oral: "Walk me through the state management architecture of your Angular application.",
+                tasksList: ["Complete standalone dashboard UI build", "Verify zero memory leaks on component destruction", "Conduct code review"]
+            },
+
+            // PHASE 6: FULL STACK INTEGRATION, SECURITY & OAUTH2 (DAYS 46-50)
+            {
+                day: 46,
+                phase: "phase6",
+                phaseTitle: "Phase 6: Full Stack Integration, Spring Security & OAuth2 (Days 46 - 50)",
+                title: "Spring Security 6 Architecture & SecurityFilterChain Filters",
+                concept: "• SecurityFilterChain bean configuration (replacing legacy WebSecurityConfigurerAdapter).\n• DelegatingFilterProxy, FilterChainProxy, SecurityContextHolder, Authentication, GrantedAuthority.\n• CORS (Cross-Origin Resource Sharing) & CSRF configuration for stateless APIs.",
+                task: "Configure Spring Security 6 in Spring Boot 3 with custom SecurityFilterChain permitting public auth endpoints and locking down API endpoints.",
+                oral: "How does Spring Security's DelegatingFilterProxy bridge Servlet container filters with Spring Beans?",
+                tasksList: ["Define SecurityFilterChain bean", "Configure CorsConfigurationSource bean for Angular frontend", "Disable CSRF for stateless REST API"]
+            },
+            {
+                day: 47,
+                phase: "phase6",
+                phaseTitle: "Phase 6: Full Stack Integration, Spring Security & OAuth2 (Days 46 - 50)",
+                title: "Stateless Authentication: JWT (JSON Web Tokens) Implementation",
+                concept: "• JWT Structure: Header (Algorithm & Token Type), Payload (Claims, Sub, Exp), Signature.\n• Access Tokens (short-lived 15 mins) vs Refresh Tokens (long-lived 7 days stored in HTTP-Only Cookie).\n• OncePerRequestFilter custom filter for parsing Bearer tokens.",
+                task: "Implement JWT Authentication in Spring Boot from scratch using io.jsonwebtoken (jjwt). Build /api/auth/login and /api/auth/refresh endpoints.",
+                oral: "Why should Refresh Tokens be stored in HTTP-Only, Secure cookies instead of LocalStorage?",
+                tasksList: ["Implement JwtUtils for token generation and verification", "Create JwtAuthenticationFilter extending OncePerRequestFilter", "Build Refresh Token rotation mechanism"]
+            },
+            {
+                day: 48,
+                phase: "phase6",
+                phaseTitle: "Phase 6: Full Stack Integration, Spring Security & OAuth2 (Days 46 - 50)",
+                title: "OAuth2 & OpenID Connect (OIDC) Integration",
+                concept: "• OAuth2 Roles: Resource Owner, Client, Authorization Server, Resource Server.\n• Authorization Code Grant Flow with PKCE (Proof Key for Code Exchange).\n• Spring Boot as OAuth2 Resource Server (spring-boot-starter-oauth2-resource-server).",
+                task: "Configure Spring Boot as an OAuth2 Resource Server that validates JWT tokens issued by an external OAuth2 Provider (Keycloak / Okta / Auth0).",
+                oral: "Explain the OAuth2 Authorization Code Grant flow with PKCE step-by-step.",
+                tasksList: ["Configure OAuth2 Resource Server in Spring Security", "Extract roles from JWT claims into GrantedAuthority", "Test protected endpoint using OAuth2 Bearer token"]
+            },
+            {
+                day: 49,
+                phase: "phase6",
+                phaseTitle: "Phase 6: Full Stack Integration, Spring Security & OAuth2 (Days 46 - 50)",
+                title: "Real-Time Full Stack Communication: WebSockets & STOMP Protocol",
+                concept: "• HTTP Polling vs Long Polling vs WebSockets vs Server-Sent Events (SSE).\n• STOMP (Simple Text Oriented Messaging Protocol) over WebSockets.\n• Spring WebSocket MessageBroker (@EnableWebSocketMessageBroker) & Angular RxStomp.",
+                task: "Build a Real-Time Live Notification / Chat feature: Spring Boot STOMP WebSocket broker + Angular frontend client receiving instant updates.",
+                oral: "When should you choose WebSockets over Server-Sent Events (SSE)?",
+                tasksList: ["Configure Spring WebSocket STOMP endpoint", "Implement @MessageMapping controller method", "Connect Angular app via RxStomp client"]
+            },
+            {
+                day: 50,
+                phase: "phase6",
+                phaseTitle: "Phase 6: Full Stack Integration, Spring Security & OAuth2 (Days 46 - 50)",
+                title: "Phase 6 Full Stack Hands-on Integration Build",
+                concept: "• Wiring Angular 18 frontend to Spring Boot 3 REST Backend + JWT Auth + PostgreSQL.",
+                task: "Connect your Angular app to your Spring Boot REST Backend. Implement end-to-end user login, automatic JWT attachment via interceptor, and server-side paginated table rendering.",
+                oral: "Walk through the security handshake and HTTP request pipeline when your Angular app calls a protected Spring Boot API.",
+                tasksList: ["Test full stack login flow end-to-end", "Verify server-side pagination with Spring Data Pageable", "Handle auth expiration gracefully in frontend"]
+            },
+
+            // PHASE 7: LOW-LEVEL DESIGN (LLD), SYSTEM DESIGN & PATTERNS (DAYS 51-55)
+            {
+                day: 51,
+                phase: "phase7",
+                phaseTitle: "Phase 7: LLD, System Design & Clean Architecture (Days 51 - 55)",
+                title: "SOLID Principles Deep Dive & Clean Architecture Code Examples",
+                concept: "• S: Single Responsibility Principle (SRP).\n• O: Open/Closed Principle (OCP - Strategy pattern).\n• L: Liskov Substitution Principle (LSP).\n• I: Interface Segregation Principle (ISP).\n• D: Dependency Inversion Principle (DIP).",
+                task: "Take a bloated legacy payment processing class violating all 5 SOLID principles and refactor it into clean, modular Java code using SOLID guidelines.",
+                oral: "Explain the Liskov Substitution Principle (LSP). Give an example of an LSP violation.",
+                tasksList: ["Identify SOLID violations in legacy code", "Refactor using Interfaces and Strategy Pattern", "Write unit tests proving extensibility"]
+            },
+            {
+                day: 52,
+                phase: "phase7",
+                phaseTitle: "Phase 7: LLD, System Design & Clean Architecture (Days 51 - 55)",
+                title: "Creational & Structural Design Patterns in Enterprise Java",
+                concept: "• Creational: Singleton (Double-checked locking, Enum Singleton), Factory Method, Abstract Factory, Builder (Fluent interface).\n• Structural: Adapter, Decorator (Java I/O streams), Proxy, Facade.",
+                task: "Implement a thread-safe Double-Checked Locking Singleton and a fluent Builder pattern for an immutable HttpRequest DTO class.",
+                oral: "Why is Enum Singleton considered the safest way to implement a Singleton in Java against Reflection and Serialization attacks?",
+                tasksList: ["Code Double-Checked Locking Singleton with volatile instance", "Code Enum Singleton", "Implement fluent Builder Pattern class"]
+            },
+            {
+                day: 53,
+                phase: "phase7",
+                phaseTitle: "Phase 7: LLD, System Design & Clean Architecture (Days 51 - 55)",
+                title: "Behavioral Design Patterns: Strategy, Observer, Command & State",
+                concept: "• Strategy Pattern: Swappable algorithms at runtime.\n• Observer Pattern: Event listeners/publishers.\n• State Pattern: Encapsulating state-dependent behavior.\n• Chain of Responsibility: Middleware/filter chains.",
+                task: "Design a Low-Level Design (LLD) for an Elevator Control System or Parking Lot System in Java implementing Strategy and State patterns.",
+                oral: "Walk me through your Low-Level Class Diagram for a Parking Lot system.",
+                tasksList: ["Draw Class Diagram (UML) for Parking Lot", "Code entities, enums, and Strategy interfaces", "Implement pricing strategy algorithm"]
+            },
+            {
+                day: 54,
+                phase: "phase7",
+                phaseTitle: "Phase 7: LLD, System Design & Clean Architecture (Days 51 - 55)",
+                title: "High-Level System Design (HLD): Scalability, Caching & Load Balancing",
+                concept: "• Vertical vs Horizontal Scaling.\n• Load Balancers (Layer 4 vs Layer 7, Round Robin, Least Connections, Consistent Hashing).\n• Caching Strategies: Cache-Aside, Read-Through, Write-Through, Write-Back, Eviction policies (LRU, LFU).\n• Database Scaling: Read Replicas, Sharding/Partitioning.",
+                task: "Design HLD for a Scalable URL Shortener (TinyURL) or Rate Limiter service: Calculate storage estimations, DB schema, Redis cache, and HLD diagram.",
+                oral: "How does Consistent Hashing work in distributed caching systems?",
+                tasksList: ["Perform capacity & storage calculations", "Design Database schema & Base62 encoding strategy", "Draw High-Level System Architecture diagram"]
+            },
+            {
+                day: 55,
+                phase: "phase7",
+                phaseTitle: "Phase 7: LLD, System Design & Clean Architecture (Days 51 - 55)",
+                title: "HLD Case Study: E-Commerce / Food Delivery Platform Architecture",
+                concept: "• Designing for high concurrency (100,000 requests/sec during flash sales).\n• Database choice: Relational (PostgreSQL) vs NoSQL (MongoDB, Cassandra).\n• Asynchronous processing with Message Queues.",
+                task: "Draft a complete System Design document for a Swiggy/Zomato or Flipkart backend architecture including Microservices boundaries, DB selection, and Caching.",
+                oral: "How do you handle inventory double-booking/overselling during a high-concurrency flash sale?",
+                tasksList: ["Define service boundaries and API specs", "Address single points of failure and database bottlenecks", "Write complete architecture specification document"]
+            },
+
+            // PHASE 8: MOCK DRILLS & GURUGRAM RESUME ALIGNMENT (DAYS 56-60)
+            {
+                day: 56,
+                phase: "phase8",
+                phaseTitle: "Phase 8: Mock Drills & Gurugram Resume Alignment (Days 56 - 60)",
+                title: "Resume Refactoring & Technical Impact Framing",
+                concept: "• Transforming support/maintenance project bullet points into high-impact full-stack feature contributions.\n• Applying the Google XYZ Formula: 'Accomplished [X] as measured by [Y], by doing [Z]'.\n• Highlighting Java 17, Spring Boot 3, Angular 18, Kafka, Redis, Microservices.",
+                task: "Rewrite all work experience bullet points on your resume using action verbs and quantified impact metrics (e.g., 'Reduced response latency by 35% using Redis Caching').",
+                oral: "Walk me through your resume and explain your primary contributions in your current project.",
+                tasksList: ["Rewrite project section using impact metrics", "Ensure ATS compatibility for Gurugram job portals", "Highlight Full Stack ownership"]
+            },
+            {
+                day: 57,
+                phase: "phase8",
+                phaseTitle: "Phase 8: Mock Drills & Gurugram Resume Alignment (Days 56 - 60)",
+                title: "Gurugram Tech Company Positioning & Portal Optimization",
+                concept: "• Optimizing profiles on Naukri.com, Instahyre, LinkedIn, and Hirist targeting Gurugram/NCR MNCs and product scale-ups.\n• Keyword optimization for full stack algorithms, microservices, and system design.\n• Managing Notice Period discussions (30 vs 60 vs 90 days strategy).",
+                task: "Optimize your Naukri and LinkedIn profiles with target keywords, project summaries, and updated skills badges.",
+                oral: "How do you handle questions regarding your notice period and current vs expected CTC for Gurugram roles?",
+                tasksList: ["Update Naukri headline and key skills list", "Update LinkedIn bio and experience section", "Prepare notice period buy-out / negotiation script"]
+            },
+            {
+                day: 58,
+                phase: "phase8",
+                phaseTitle: "Phase 8: Mock Drills & Gurugram Resume Alignment (Days 56 - 60)",
+                title: "Behavioral & Behavioral STAR Method Interview Preparation",
+                concept: "• Answering behavioral questions using STAR method (Situation, Task, Action, Result).\n• Explaining technical conflicts, project pressure, handling production incidents, and AI tool usage boundaries.",
+                task: "Write out 5 structured STAR responses for common scenario questions (e.g., 'Tell me about a time a production bug occurred', 'How do you handle tight sprint deadlines?').",
+                oral: "Tell me about a time you had a technical disagreement with a senior developer or architect.",
+                tasksList: ["Draft 5 STAR story templates", "Practice speaking responses aloud without reading", "Refine answers to emphasize problem solving and ownership"]
+            },
+            {
+                day: 59,
+                phase: "phase8",
+                phaseTitle: "Phase 8: Mock Drills & Gurugram Resume Alignment (Days 56 - 60)",
+                title: "Full Stack Technical Mock Interview Drill 1 (Java + Spring + SQL)",
+                concept: "• 60-minute intensive technical mock drill focusing on Core Java, JVM, Multithreading, Spring Boot internals, JPA, and SQL queries.",
+                task: "Conduct a timed self-mock or peer mock interview. Speak answers aloud without looking at notes or AI tools. Record and review audio.",
+                oral: "Conduct full backend mock session.",
+                tasksList: ["Complete 60-minute backend technical mock drill", "Log weak technical areas needing final polish", "Review JVM and SQL concepts"]
+            },
+            {
+                day: 60,
+                phase: "phase8",
+                phaseTitle: "Phase 8: Mock Drills & Gurugram Resume Alignment (Days 56 - 60)",
+                title: "Full Stack Technical Mock Interview Drill 2 (Microservices + Angular + System Design)",
+                concept: "• 60-minute intensive technical mock drill focusing on Microservices, Kafka, Angular Signals/RxJS, and Low-Level System Design.",
+                task: "Complete final mock interview drill. Review your 60-day checklist and confirm 100% readiness to crack top Gurugram developer roles!",
+                oral: "Why are you looking for a job change? Why Gurugram location? What value do you bring to our team?",
+                tasksList: ["Complete 60-minute frontend + architecture mock drill", "Submit applications to top 20 target companies in Gurugram", "Celebrate completion of your 60-Day Prep Journey! 🚀"]
+            }
+        ];
+
+        // Application State
+        let appState = {
+            completedTasks: {}, // { taskId: boolean }
+            dayNotes: {},       // { dayNumber: { notes: '', snippet: '' } }
+            currentFilterStatus: 'all',
+            currentFilterPhase: 'all',
+            searchQuery: '',
+            activeModalDay: null
+        };
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            loadStateFromStorage();
+            renderCurriculum();
+            updateDashboardStats();
+            lucide.createIcons();
+
+            // Search input handler
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                appState.searchQuery = e.target.value.toLowerCase().trim();
+                renderCurriculum();
+            });
+        });
+
+        function loadStateFromStorage() {
+            const savedState = localStorage.getItem('java_fs_60day_tracker_state_v1');
+            if (savedState) {
+                try {
+                    appState = { ...appState, ...JSON.parse(savedState) };
+                } catch (e) {
+                    console.error('Failed to parse storage state:', e);
+                }
+            }
+        }
+
+        function saveStateToStorage() {
+            localStorage.setItem('java_fs_60day_tracker_state_v1', JSON.stringify(appState));
+        }
+
+        function renderCurriculum() {
+            const container = document.getElementById('daysContainer');
+            container.innerHTML = '';
+
+            const filtered = curriculumData.filter(item => {
+                // Search Query Filter
+                const matchesSearch = appState.searchQuery === '' || 
+                    item.title.toLowerCase().includes(appState.searchQuery) ||
+                    item.concept.toLowerCase().includes(appState.searchQuery) ||
+                    item.task.toLowerCase().includes(appState.searchQuery) ||
+                    item.oral.toLowerCase().includes(appState.searchQuery);
+
+                // Phase Select Filter
+                const matchesPhase = appState.currentFilterPhase === 'all' || item.phase === appState.currentFilterPhase;
+
+                // Status Filter
+                const dayTaskKeys = item.tasksList.map((_, idx) => `day_${item.day}_task_${idx}`);
+                const isCompleted = dayTaskKeys.length > 0 && dayTaskKeys.every(k => appState.completedTasks[k]);
+                
+                let matchesStatus = true;
+                if (appState.currentFilterStatus === 'completed') matchesStatus = isCompleted;
+                if (appState.currentFilterStatus === 'pending') matchesStatus = !isCompleted;
+
+                return matchesSearch && matchesPhase && matchesStatus;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-16 bg-slate-900/40 rounded-2xl border border-slate-800">
+                        <i data-lucide="search-x" class="w-12 h-12 text-slate-500 mx-auto mb-3"></i>
+                        <h3 class="text-base font-semibold text-slate-300">No curriculum days match your search/filter</h3>
+                        <p class="text-xs text-slate-500 mt-1">Try resetting search filters or keywords.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            let currentPhaseHeader = "";
+
+            filtered.forEach(item => {
+                // Phase Grouping Header
+                if (item.phaseTitle !== currentPhaseHeader && appState.currentFilterPhase === 'all' && appState.searchQuery === '') {
+                    currentPhaseHeader = item.phaseTitle;
+                    const phaseHeader = document.createElement('div');
+                    phaseHeader.className = "pt-6 pb-2 text-xs font-extrabold tracking-wider uppercase text-sky-400 flex items-center gap-2 border-b border-slate-800/80 mb-4";
+                    phaseHeader.innerHTML = `<i data-lucide="layers" class="w-4 h-4"></i> ${currentPhaseHeader}`;
+                    container.appendChild(phaseHeader);
+                }
+
+                // Checkbox task metrics
+                const taskKeys = item.tasksList.map((_, idx) => `day_${item.day}_task_${idx}`);
+                const doneCount = taskKeys.filter(k => appState.completedTasks[k]).length;
+                const totalCount = taskKeys.length;
+                const dayPct = Math.round((doneCount / totalCount) * 100);
+                const isFullyDone = doneCount === totalCount;
+
+                // Phase Badge Colors
+                let badgeStyle = "bg-sky-500/10 text-sky-400 border-sky-500/30";
+                if (item.phase === "phase2") badgeStyle = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+                if (item.phase === "phase3") badgeStyle = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+                if (item.phase === "phase4") badgeStyle = "bg-teal-500/10 text-teal-400 border-teal-500/30";
+                if (item.phase === "phase5") badgeStyle = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+                if (item.phase === "phase6") badgeStyle = "bg-red-500/10 text-red-400 border-red-500/30";
+                if (item.phase === "phase7") badgeStyle = "bg-purple-500/10 text-purple-400 border-purple-500/30";
+                if (item.phase === "phase8") badgeStyle = "bg-indigo-500/10 text-indigo-400 border-indigo-500/30";
+
+                const dayNotes = appState.dayNotes[item.day] || { notes: '', snippet: '' };
+                const hasNotes = dayNotes.notes.trim() !== '' || dayNotes.snippet.trim() !== '';
+
+                const card = document.createElement('div');
+                card.className = `bg-slate-900/60 border ${isFullyDone ? 'border-emerald-500/50 bg-slate-900/90' : 'border-slate-800'} rounded-2xl p-5 hover:border-slate-700 transition duration-200 shadow-xl`;
+
+                card.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                        <div class="flex items-start gap-3.5">
+                            <div class="w-11 h-11 rounded-xl ${isFullyDone ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-slate-800 text-slate-300 border border-slate-700'} flex items-center justify-center font-black text-sm shrink-0 shadow-inner">
+                                D${item.day}
+                            </div>
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold tracking-wider px-2.5 py-0.5 rounded-full border ${badgeStyle} uppercase">
+                                        PHASE ${item.phase.replace('phase', '')}
+                                    </span>
+                                    ${isFullyDone ? '<span class="text-[10px] font-semibold bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full flex items-center gap-1 border border-emerald-500/30"><i data-lucide="check" class="w-3 h-3"></i> Completed</span>' : ''}
+                                </div>
+                                <h3 class="text-base font-bold text-white leading-snug">${item.title}</h3>
+                            </div>
+                        </div>
+
+                        <!-- Progress & Actions -->
+                        <div class="flex items-center gap-3 self-end md:self-auto">
+                            <div class="text-right">
+                                <p class="text-xs font-semibold text-slate-300">${doneCount}/${totalCount} Action Items</p>
+                                <div class="w-28 bg-slate-800 rounded-full h-1.5 mt-1 overflow-hidden">
+                                    <div class="bg-emerald-400 h-1.5 rounded-full transition-all duration-300" style="width: ${dayPct}%"></div>
+                                </div>
+                            </div>
+                            <button onclick="openNotesModal(${item.day})" class="px-3.5 py-1.5 rounded-xl ${hasNotes ? 'bg-sky-500/20 border border-sky-500/40 text-sky-300' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'} text-xs font-medium flex items-center gap-1.5 transition shadow-sm">
+                                <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> ${hasNotes ? 'Notes Saved' : 'Notes & Code'}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Concepts & Task Grid -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4 text-xs">
+                        <!-- Concepts -->
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                            <p class="font-bold text-sky-400 uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5">
+                                <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Under-The-Hood Mechanics
+                            </p>
+                            <div class="text-slate-300 leading-relaxed whitespace-pre-line font-normal">${item.concept}</div>
+                        </div>
+
+                        <!-- Hands-on Building Task -->
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800/80">
+                            <p class="font-bold text-amber-400 uppercase tracking-wider text-[10px] mb-2 flex items-center gap-1.5">
+                                <i data-lucide="code" class="w-3.5 h-3.5"></i> Hands-on Practical Building Task
+                            </p>
+                            <p class="text-slate-200 leading-relaxed font-medium">${item.task}</p>
+                        </div>
+                    </div>
+
+                    <!-- Interview Mastery Questions -->
+                    <div class="bg-indigo-950/30 border border-indigo-500/20 p-3.5 rounded-xl mt-3 flex items-start gap-3">
+                        <div class="p-1.5 bg-indigo-500/20 text-indigo-400 rounded-lg shrink-0 mt-0.5">
+                            <i data-lucide="help-circle" class="w-4 h-4"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] font-bold uppercase tracking-wider text-indigo-300">Target Interview Mastery Question:</span>
+                            <p class="text-xs text-indigo-100 font-semibold mt-0.5">"${item.oral}"</p>
+                        </div>
+                    </div>
+
+                    <!-- Task Checkboxes -->
+                    <div class="mt-4 pt-3 border-t border-slate-800">
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Daily Action Tasks:</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            ${item.tasksList.map((t, idx) => {
+                                const key = `day_${item.day}_task_${idx}`;
+                                const isChecked = !!appState.completedTasks[key];
+                                return `
+                                    <label class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/40 hover:bg-slate-950 border border-slate-800/80 cursor-pointer transition">
+                                        <input type="checkbox" onchange="toggleTask('${key}')" ${isChecked ? 'checked' : ''} 
+                                               class="mt-0.5 rounded border-slate-700 text-sky-500 focus:ring-sky-500/20 bg-slate-900 w-4 h-4">
+                                        <span class="text-xs text-slate-300 ${isChecked ? 'line-through text-slate-500' : ''}">${t}</span>
+                                    </label>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
+
+            lucide.createIcons();
+        }
+
+        function toggleTask(key) {
+            appState.completedTasks[key] = !appState.completedTasks[key];
+            saveStateToStorage();
+            renderCurriculum();
+            updateDashboardStats();
+        }
+
+        function updateDashboardStats() {
+            let totalTasks = 0;
+            let completedTasksCount = 0;
+            let fullyFinishedDays = 0;
+
+            curriculumData.forEach(item => {
+                const keys = item.tasksList.map((_, idx) => `day_${item.day}_task_${idx}`);
+                totalTasks += keys.length;
+                const done = keys.filter(k => appState.completedTasks[k]).length;
+                completedTasksCount += done;
+
+                if (done === keys.length && keys.length > 0) {
+                    fullyFinishedDays++;
+                }
+            });
+
+            const overallPct = totalTasks > 0 ? Math.round((completedTasksCount / totalTasks) * 100) : 0;
+
+            // DOM Updates
+            document.getElementById('overallPct').innerText = `${overallPct}%`;
+            document.getElementById('overallProgressBar').style.width = `${overallPct}%`;
+            document.getElementById('tasksCount').innerText = `${completedTasksCount} / ${totalTasks}`;
+            document.getElementById('daysCompletedCount').innerText = fullyFinishedDays;
+
+            // Readiness Badge Logic
+            const readinessTitle = document.getElementById('readinessStatus');
+            const readinessScore = document.getElementById('readinessScore');
+
+            if (overallPct < 20) {
+                readinessTitle.innerText = "Level 1: Foundation";
+                readinessTitle.className = "text-base font-extrabold text-amber-400 mt-1";
+                readinessScore.innerText = "12 - 16 LPA";
+            } else if (overallPct < 50) {
+                readinessTitle.innerText = "Level 2: Backend Ready";
+                readinessTitle.className = "text-base font-extrabold text-sky-400 mt-1";
+                readinessScore.innerText = "16 - 22 LPA";
+            } else if (overallPct < 80) {
+                readinessTitle.innerText = "Level 3: Full Stack Ready";
+                readinessTitle.className = "text-base font-extrabold text-indigo-400 mt-1";
+                readinessScore.innerText = "22 - 28 LPA";
+            } else {
+                readinessTitle.innerText = "Level 4: Crack Gurugram Top Tech! 🚀";
+                readinessTitle.className = "text-base font-extrabold text-emerald-400 mt-1";
+                readinessScore.innerText = "28 - 35+ LPA";
+            }
+
+            // Active Phase Title update
+            const activePhase = document.getElementById('activePhaseTitle');
+            const activePhaseSub = document.getElementById('activePhaseSub');
+
+            if (fullyFinishedDays < 10) {
+                activePhase.innerText = "Phase 1: Java 17+ Core";
+                activePhaseSub.innerText = "Days 1 - 10 Core Engine";
+            } else if (fullyFinishedDays < 18) {
+                activePhase.innerText = "Phase 2: Collections & DS";
+                activePhaseSub.innerText = "Days 11 - 18 Problem Solving";
+            } else if (fullyFinishedDays < 27) {
+                activePhase.innerText = "Phase 3: Spring Boot 3 & JPA";
+                activePhaseSub.innerText = "Days 19 - 27 Orm & SQL";
+            } else if (fullyFinishedDays < 36) {
+                activePhase.innerText = "Phase 4: Microservices & Kafka";
+                activePhaseSub.innerText = "Days 28 - 36 Architecture";
+            } else if (fullyFinishedDays < 45) {
+                activePhase.innerText = "Phase 5: Angular 18+ & Signals";
+                activePhaseSub.innerText = "Days 37 - 45 Frontend Mastery";
+            } else if (fullyFinishedDays < 50) {
+                activePhase.innerText = "Phase 6: Integration & Security";
+                activePhaseSub.innerText = "Days 46 - 50 Auth & WebSockets";
+            } else if (fullyFinishedDays < 55) {
+                activePhase.innerText = "Phase 7: LLD & System Design";
+                activePhaseSub.innerText = "Days 51 - 55 Architectural Patterns";
+            } else {
+                activePhase.innerText = "Phase 8: Mock Drills & Resume";
+                activePhaseSub.innerText = "Days 56 - 60 Market Switch Crack";
+            }
+        }
+
+        function setStatusFilter(status) {
+            appState.currentFilterStatus = status;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-800', 'text-slate-200');
+                btn.classList.add('text-slate-400');
+            });
+
+            if (status === 'all') document.getElementById('btnStatusAll').classList.add('bg-slate-800', 'text-slate-200');
+            if (status === 'pending') document.getElementById('btnStatusPending').classList.add('bg-slate-800', 'text-slate-200');
+            if (status === 'completed') document.getElementById('btnStatusCompleted').classList.add('bg-slate-800', 'text-slate-200');
+
+            renderCurriculum();
+        }
+
+        function applyFilters() {
+            appState.currentFilterPhase = document.getElementById('phaseFilter').value;
+            renderCurriculum();
+        }
+
+        // Modal Operations
+        function openNotesModal(dayNumber) {
+            appState.activeModalDay = dayNumber;
+            const item = curriculumData.find(d => d.day === dayNumber);
+            const saved = appState.dayNotes[dayNumber] || { notes: '', snippet: '' };
+
+            document.getElementById('modalDayTitle').innerText = `Day ${item.day}: ${item.title}`;
+            document.getElementById('modalNotesInput').value = saved.notes || '';
+            document.getElementById('modalSnippetInput').value = saved.snippet || '';
+
+            document.getElementById('notesModal').classList.remove('hidden');
+        }
+
+        function closeNotesModal() {
+            document.getElementById('notesModal').classList.add('hidden');
+            appState.activeModalDay = null;
+        }
+
+        function saveModalNotes() {
+            if (!appState.activeModalDay) return;
+            const dayNumber = appState.activeModalDay;
+            const notes = document.getElementById('modalNotesInput').value;
+            const snippet = document.getElementById('modalSnippetInput').value;
+
+            appState.dayNotes[dayNumber] = { notes, snippet };
+            saveStateToStorage();
+            closeNotesModal();
+            renderCurriculum();
+        }
+
+        function exportData() {
+            let exportMarkdown = `# 60-Day Java Full Stack Job Switch Preparation Journal\n`;
+            exportMarkdown += `*Generated for 3-5 YOE Full Stack Switch in Gurugram, India*\n\n`;
+            
+            let notesCount = 0;
+
+            curriculumData.forEach(item => {
+                const note = appState.dayNotes[item.day];
+                if (note && (note.notes || note.snippet)) {
+                    notesCount++;
+                    exportMarkdown += `## Day ${item.day}: ${item.title}\n`;
+                    exportMarkdown += `**Phase:** ${item.phaseTitle}\n\n`;
+                    if (note.notes) exportMarkdown += `### 📝 Key Learnings & Architecture Notes:\n${note.notes}\n\n`;
+                    if (note.snippet) exportMarkdown += `### 💻 Code Snippet / Solution:\n\`\`\`java\n${note.snippet}\n\`\`\`\n\n`;
+                    exportMarkdown += `---\n\n`;
+                }
+            });
+
+            if (notesCount === 0) {
+                alert('No notes or code snippets recorded yet! Click "Notes & Code" on any day card to record your learnings before exporting.');
+                return;
+            }
+
+            const blob = new Blob([exportMarkdown], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '60Day_Java_FullStack_Prep_Notes.md';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function confirmReset() {
+            if (confirm("Are you sure you want to reset all completed checkboxes and saved notes? This action cannot be undone.")) {
+                appState.completedTasks = {};
+                appState.dayNotes = {};
+                saveStateToStorage();
+                renderCurriculum();
+                updateDashboardStats();
+            }
+        }
+    </script>
+</body>
+</html>

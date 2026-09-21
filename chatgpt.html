@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Full Stack Switch — 56 Day Build Tracker</title>
+<style>
+:root{--bg:#0b1020;--card:#121a2e;--card2:#18223b;--text:#eef3ff;--muted:#9eabc7;--accent:#7c9cff;--green:#48d597;--yellow:#ffd166;--red:#ff7185;--border:#263451}
+*{box-sizing:border-box} body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#09101f,#10182d);color:var(--text)}
+.container{max-width:1200px;margin:auto;padding:28px}
+header{background:linear-gradient(135deg,#18264b,#111a31);border:1px solid var(--border);border-radius:22px;padding:28px;margin-bottom:20px}
+h1{margin:0 0 8px;font-size:30px}.subtitle{color:var(--muted);line-height:1.6}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}.stat{background:#0c1427;border:1px solid var(--border);border-radius:14px;padding:15px}.stat b{display:block;font-size:24px}.stat span{color:var(--muted);font-size:13px}
+.progress{height:9px;background:#26304a;border-radius:10px;overflow:hidden;margin-top:15px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--green));transition:.3s}
+.layout{display:grid;grid-template-columns:260px 1fr;gap:18px}.sidebar,.content{background:var(--card);border:1px solid var(--border);border-radius:18px}.sidebar{padding:14px;height:max-content;position:sticky;top:15px}.week{padding:12px;border-radius:12px;margin-bottom:7px;cursor:pointer;color:var(--muted)}.week:hover,.week.active{background:var(--card2);color:white}.week small{display:block;margin-top:4px}
+.content{padding:24px}.day-title{display:flex;justify-content:space-between;gap:20px;align-items:flex-start}.day-title h2{margin:0 0 6px}.badge{background:#26355d;color:#bdd0ff;padding:7px 10px;border-radius:20px;font-size:12px;white-space:nowrap}
+.section{margin-top:20px;background:#0d1528;border:1px solid var(--border);border-radius:15px;padding:18px}.section h3{margin:0 0 12px;font-size:16px}
+ul{margin:8px 0;padding-left:22px;line-height:1.8}.task{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #202b43;align-items:flex-start}.task:last-child{border-bottom:0}.task input{margin-top:5px;accent-color:var(--green)}.task.done label{text-decoration:line-through;color:#71809d}.task label{cursor:pointer;line-height:1.5}
+.tip{border-left:3px solid var(--yellow);padding:10px 13px;background:#171a22;color:#dbe0ec;border-radius:5px;margin-top:12px}
+button{border:0;border-radius:10px;padding:10px 14px;background:var(--accent);color:white;cursor:pointer;font-weight:600}button.secondary{background:#263451}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{position:static}.stats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>🚀 Java Full Stack Switch — Build-First Tracker</h1>
+<div class="subtitle">56 days • Java → Spring Boot → Security → SQL/JPA → Angular → System Design → Interview mode. Learn by building, not by watching theory.</div>
+<div class="stats">
+<div class="stat"><b id="completed">0</b><span>Tasks completed</span></div>
+<div class="stat"><b id="total">0</b><span>Total tasks</span></div>
+<div class="stat"><b id="percent">0%</b><span>Overall progress</span></div>
+<div class="stat"><b id="daystat">Day 1</b><span>Current day</span></div>
+</div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="actions"><button onclick="resetAll()" class="secondary">Reset progress</button></div>
+</header>
+
+<div class="layout">
+<aside class="sidebar" id="weeks"></aside>
+<main class="content" id="content"></main>
+</div>
+</div>
+
+<script>
+const days = [
+{d:1,w:1,t:"Java Collections — Build an Employee Analytics Engine",goal:"Rebuild coding rhythm while testing Collections, generics, Streams, equality, complexity and edge cases.",topics:["List / Set / Map","equals() and hashCode()","Comparator / Comparable","Generics","Big-O basics","Streams as a tool, not a syntax exercise"],tasks:[
+"Create Employee(id, name, department, salary, skills) with proper encapsulation.",
+"Load at least 15 employees, including duplicate IDs, same names, same salaries, empty skills and two employees in the same department.",
+"Implement addEmployee, removeEmployee, findById and findByDepartment using appropriate collections.",
+"Detect duplicate employee IDs and explain why your chosen collection can/cannot prevent them.",
+"Find the highest-paid employee in every department.",
+"Calculate average salary per department.",
+"Return employees grouped by department.",
+"Find employees who have more than 2 skills and find the most common skill.",
+"Sort by department, then salary descending, then name.",
+"Create an employee lookup by ID and explain expected lookup complexity.",
+"Write at least 3 edge-case tests: empty list, duplicate ID, missing employee.",
+"Do the main solution twice: once with normal loops and once with Streams. Compare readability and complexity."
+],challenge:"After finishing, answer without searching: Why is HashMap generally O(1)? Why do equals() and hashCode() matter? When would Set be better than List? What happens if you mutate a field used in hashCode() after inserting an object into HashSet?"},
+
+{d:2,w:1,t:"Java Streams — Sales Analytics",goal:"Use map/filter/grouping/reduce without blindly chaining operations.",topics:["map","filter","flatMap","groupingBy","partitioningBy","reduce","Optional","Collectors"],tasks:["Create Product and Order models.","Generate 20+ orders containing multiple products and statuses.","Calculate revenue per customer.","Find the highest-value order.","Group orders by status.","Find the top-selling product by quantity.","Find customers whose total spending exceeds a threshold.","Flatten all ordered products and calculate product frequency.","Use Optional for a safe findById operation.","Rewrite one difficult Stream solution using loops and compare the two."],challenge:"Explain intermediate vs terminal operations, lazy evaluation, map vs flatMap, and why Optional should not automatically be used everywhere."},
+
+{d:3,w:1,t:"Java OOP + SOLID — Payment Engine",goal:"Move from syntax to design decisions.",topics:["Interfaces","abstract classes","composition","polymorphism","SOLID"],tasks:["Create PaymentMethod interface.","Implement CardPayment, UpiPayment and BankTransfer.","Create PaymentService without if/else chains for every payment type.","Add a new WalletPayment without modifying existing payment logic.","Introduce validation and custom exceptions.","Write a short explanation of how your design follows Open/Closed and Dependency Inversion."],challenge:"I will review whether you actually achieved polymorphism or merely moved if/else blocks around."},
+
+{d:4,w:1,t:"Exceptions + Clean Java — Order Processing",goal:"Understand failure paths instead of only happy-path coding.",topics:["checked vs unchecked","custom exceptions","try-with-resources","validation","defensive programming"],tasks:["Build order processing with invalid customer, invalid quantity and insufficient stock cases.","Create meaningful custom exceptions.","Return useful error information.","Handle multiple failure scenarios without a giant try/catch.","Write tests for every failure path."],challenge:"Explain when you would use checked vs unchecked exceptions and why catching Exception everywhere is dangerous."},
+
+{d:5,w:1,t:"Java Generics + Reusable Utilities",goal:"Build type-safe reusable code.",topics:["generic classes","bounded types","wildcards","PECS"],tasks:["Create a generic Repository<T>.","Add generic find/filter methods.","Create a method accepting ? extends Number.","Create a method consuming a collection using ? super Employee.","Use your utilities with two unrelated entity types."],challenge:"Explain PECS using your own code, not a definition."},
+
+{d:6,w:1,t:"Multithreading — Concurrent Order Processor",goal:"Understand concurrency through an actual problem.",topics:["Thread","Runnable","ExecutorService","Callable","Future","synchronized","AtomicInteger","ConcurrentHashMap"],tasks:["Process 1000 orders using an ExecutorService.","Track processed count safely.","Create a deliberately broken shared counter and observe the race condition.","Fix it using synchronized and AtomicInteger.","Use ConcurrentHashMap for aggregated results.","Create a small deadlock example and then fix it."],challenge:"Explain race condition, thread safety, deadlock and why AtomicInteger works for simple counters."},
+
+{d:7,w:1,t:"Week 1 Review — Java Interview Lab",goal:"Prove what you learned without notes.",topics:["Java review","debugging","DSA"],tasks:["Solve 5 medium Java/DSA problems without AI.","Debug 3 intentionally broken Java snippets.","Explain HashMap, ArrayList, HashSet, Streams, equals/hashCode and ExecutorService aloud.","Refactor one previous task for readability and complexity.","Write your own 10 interview questions and answer them."],challenge:"I will conduct a mock Java interview based on your answers."},
+
+{d:8,w:2,t:"Spring Boot — Build the Task API",goal:"Create a professional REST backend.",topics:["DI","Beans","REST","Controller-Service-Repository"],tasks:["Create Spring Boot project.","Create Task entity, DTO and repository.","Implement CRUD APIs.","Use service layer properly.","Return appropriate HTTP status codes.","Test every endpoint using Postman/Swagger."],challenge:"Explain what Spring is doing when it injects your service into a controller."},
+
+{d:9,w:2,t:"DTOs + Validation",goal:"Separate API contracts from persistence models.",topics:["DTO","Bean Validation","mapping"],tasks:["Create request/response DTOs.","Add validation.","Return validation errors in a consistent structure.","Prevent clients from directly controlling database-only fields.","Write positive and negative API tests."],challenge:"Why not expose JPA entities directly from every REST endpoint?"},
+
+{d:10,w:2,t:"Global Exception Handling",goal:"Build production-style API failures.",topics:["ControllerAdvice","ExceptionHandler","error response"],tasks:["Create ResourceNotFoundException.","Create validation error response.","Handle unexpected errors safely.","Add correlation/request ID to logs if practical."],challenge:"Explain exception flow from repository/service to HTTP response."},
+
+{d:11,w:2,t:"JPA Relationships",goal:"Understand mappings by building them.",topics:["OneToMany","ManyToOne","ManyToMany","mappedBy","cascade","orphanRemoval"],tasks:["Add User and Task relationships.","Add comments to tasks.","Model one relationship as bidirectional and justify it.","Test persistence and deletion behavior."],challenge:"Explain owning side, mappedBy, cascade and orphanRemoval using your own entities."},
+
+{d:12,w:2,t:"JPA Performance Lab",goal:"Detect problems that beginners miss.",topics:["Lazy/Eager","N+1","fetch join","indexes"],tasks:["Create an endpoint that triggers N+1.","Observe SQL logs.","Fix it using an appropriate query.","Compare before/after queries.","Add an index where justified."],challenge:"Explain why N+1 happens and why making everything EAGER is not a real solution."},
+
+{d:13,w:2,t:"Pagination + Search",goal:"Build scalable APIs.",topics:["Pageable","sorting","filtering","Specifications/basic dynamic queries"],tasks:["Add pagination.","Add sorting.","Add keyword search.","Add status/priority filters.","Combine multiple filters.","Return total pages and total elements."],challenge:"Explain why returning 100,000 database rows is a bad API design."},
+
+{d:14,w:2,t:"Spring Boot Review — Build Without Tutorial",goal:"Rebuild the API from memory.",topics:["full backend review"],tasks:["Delete one CRUD feature and recreate it without looking at old code.","Add a new feature from a fresh requirement.","Debug one broken JPA query.","Explain your architecture as if in an interview."],challenge:"Mock Spring Boot interview."},
+
+{d:15,w:3,t:"SQL — Business Reporting",goal:"Become comfortable writing SQL independently.",topics:["JOIN","GROUP BY","HAVING","subqueries","CTE basics","indexes"],tasks:["Create tables for users, tasks and payments.","Write 15 business queries.","Find top users by task count.","Find departments with above-average salary.","Use joins and grouping.","Analyze an index opportunity."],challenge:"Explain INNER JOIN vs LEFT JOIN with a real result example."},
+
+{d:16,w:3,t:"Transactions — Money Transfer",goal:"Understand ACID by building a failure-prone feature.",topics:["transactions","ACID","rollback","isolation"],tasks:["Create wallet/account entities.","Implement transfer.","Force a failure midway and verify rollback.","Experiment with concurrent transfers.","Document what your transaction protects."],challenge:"Explain what happens if two transfers occur simultaneously."},
+
+{d:17,w:3,t:"Spring Security Fundamentals",goal:"Secure your API.",topics:["authentication","authorization","SecurityFilterChain","SecurityContext"],tasks:["Secure all task endpoints.","Allow public registration/login.","Create user roles.","Restrict admin endpoint.","Test authenticated vs unauthenticated requests."],challenge:"Trace one HTTP request through the security chain."},
+
+{d:18,w:3,t:"JWT Authentication",goal:"Build JWT rather than memorizing JWT theory.",topics:["JWT","filters","claims","stateless auth"],tasks:["Implement login.","Generate access token.","Validate token in a filter.","Populate SecurityContext.","Protect endpoints by role.","Handle expired/invalid tokens."],challenge:"Explain every step from login request to authorized controller execution."},
+
+{d:19,w:3,t:"Angular — Task Dashboard",goal:"Connect frontend to your API.",topics:["components","services","routing","HttpClient"],tasks:["Create task list.","Connect GET API.","Create task form.","Connect POST/PUT/DELETE.","Show loading/error/empty states.","Add routing to task detail."],challenge:"Explain component vs service responsibilities."},
+
+{d:20,w:3,t:"Angular Forms + Validation",goal:"Build robust user input.",topics:["Reactive Forms","validators","FormArray","custom validators"],tasks:["Build create/edit form.","Add synchronous validators.","Create one custom validator.","Display useful validation messages.","Prevent duplicate API submissions."],challenge:"Explain why reactive forms are useful for complex applications."},
+
+{d:21,w:3,t:"Angular HTTP + Interceptors",goal:"Make frontend production-like.",topics:["HttpInterceptor","auth token","error handling"],tasks:["Attach JWT automatically.","Handle 401 globally.","Create centralized API error handling.","Add loading handling without duplicating code everywhere."],challenge:"Explain interceptor execution order and what should not be placed in an interceptor."},
+
+{d:22,w:4,t:"Angular Signals + Reactive State",goal:"Use modern Angular deliberately.",topics:["signal","computed","effect","input"],tasks:["Represent task list with signals.","Create computed task counts.","Use input() for reusable task card.","Use effect only where side effects are justified.","Refactor one unnecessarily reactive implementation."],challenge:"Explain computed vs effect and why effect can be overused."},
+
+{d:23,w:4,t:"RxJS — Search Experience",goal:"Learn RxJS through a real UI problem.",topics:["Observable","debounceTime","switchMap","catchError","distinctUntilChanged"],tasks:["Build server-side search.","Debounce typing.","Cancel stale requests with switchMap.","Handle errors.","Handle empty search."],challenge:"Explain why switchMap is preferable to manually tracking requests here."},
+
+{d:24,w:4,t:"Angular Routing + Guards",goal:"Implement protected navigation.",topics:["route params","query params","guards","lazy loading"],tasks:["Create task detail route.","Read route ID.","Add query filters.","Protect authenticated pages.","Add lazy-loaded feature."],challenge:"Explain route params vs query params and where guards belong."},
+
+{d:25,w:4,t:"Full Stack Feature — Task Assignment",goal:"Build one feature end-to-end.",topics:["API design","DB","security","Angular"],tasks:["Design assignment API.","Implement backend.","Secure it by role.","Implement Angular UI.","Add validation.","Test happy and failure paths."],challenge:"Give a 5-minute explanation of the entire request lifecycle."},
+
+{d:26,w:4,t:"Testing — Backend",goal:"Stop treating tests as an afterthought.",topics:["JUnit","Mockito","integration tests"],tasks:["Unit-test service logic.","Mock repository dependencies.","Test exceptions.","Add one integration test hitting the database/API."],challenge:"Explain unit vs integration tests and when mocking becomes harmful."},
+
+{d:27,w:4,t:"Testing — Angular",goal:"Test meaningful behavior.",topics:["component tests","service tests","mock HTTP"],tasks:["Test task service.","Test form validation.","Test loading/error behavior.","Test one user interaction."],challenge:"Explain what behavior your tests protect."},
+
+{d:28,w:4,t:"Week 4 Full Stack Review",goal:"Build without step-by-step guidance.",topics:["Java + Spring + Angular"],tasks:["Choose a new feature yourself and build it end-to-end.","No tutorial.","AI only after you attempt the implementation.","Write a short architecture note.","Record 5 questions you struggled with."],challenge:"Mock full-stack interview."},
+
+{d:29,w:5,t:"System Design — Task Platform",goal:"Think beyond code.",topics:["requirements","API","DB","scaling"],tasks:["Design for 100k users.","Define entities and APIs.","Identify bottlenecks.","Choose indexes.","Discuss caching."],challenge:"Explain your design on a whiteboard/paper before coding."},
+
+{d:30,w:5,t:"Caching + Redis Concepts",goal:"Understand when caching helps.",topics:["cache-aside","TTL","invalidation","Redis"],tasks:["Identify 3 cacheable task-platform operations.","Implement or prototype one cache.","Measure conceptual before/after behavior.","Document cache invalidation strategy."],challenge:"Why can caching create stale data?"},
+
+{d:31,w:5,t:"Async Processing + Kafka Concepts",goal:"Understand event-driven architecture.",topics:["producer","consumer","topic","partition","offset"],tasks:["Design task-created event.","Identify producer and consumer.","Explain retries and duplicate messages.","Prototype a simple async workflow if practical."],challenge:"Why can't you blindly assume exactly-once processing?"},
+
+{d:32,w:5,t:"Microservices — Decomposition Exercise",goal:"Know when not to create microservices.",topics:["service boundaries","communication","failure"],tasks:["Split your monolith into candidate services.","Identify shared data problems.","Compare synchronous REST vs events.","Choose what should remain together."],challenge:"Defend your boundaries."},
+
+{d:33,w:5,t:"Docker + Deployment Basics",goal:"Be able to run your application consistently.",topics:["Dockerfile","images","containers","environment variables"],tasks:["Dockerize backend.","Run MySQL with Docker Compose.","Configure environment variables.","Document startup commands."],challenge:"Explain image vs container and why secrets should not be baked into images."},
+
+{d:34,w:5,t:"Logging + Production Debugging",goal:"Think like an engineer supporting your own code.",topics:["structured logging","log levels","correlation IDs","debugging"],tasks:["Add meaningful logs.","Remove noisy logs.","Trace one request.","Create a simulated production error and diagnose it."],challenge:"What information would you need from production logs to debug a 500 error?"},
+
+{d:35,w:5,t:"System Design Interview Lab",goal:"Communicate architecture under pressure.",topics:["scaling","reliability","trade-offs"],tasks:["Design task management for 1M users.","Explain database scaling.","Explain caching.","Explain asynchronous processing.","Discuss failure scenarios."],challenge:"20-minute mock system design."},
+
+{d:36,w:6,t:"DSA — Arrays + Hashing",goal:"Rebuild interview problem-solving.",topics:["frequency","prefix sum","hashing"],tasks:["Solve 5 medium problems without AI.","For every problem write brute force first, then optimized approach.","State time and space complexity."],challenge:"No memorized solutions."},
+
+{d:37,w:6,t:"DSA — Sliding Window + Two Pointers",goal:"Recognize patterns.",topics:["window","two pointers"],tasks:["Solve 5 problems.","Explain why each pointer moves.","Create one variation yourself."],challenge:"Identify the invariant maintained by your algorithm."},
+
+{d:38,w:6,t:"DSA — Stack + Queue",goal:"Build pattern recognition.",topics:["monotonic stack","queue","deque"],tasks:["Solve 5 problems.","Implement one data structure from scratch.","Explain complexity."],challenge:"Explain when a deque is useful."},
+
+{d:39,w:6,t:"DSA — Trees + BFS/DFS",goal:"Cover common interview territory.",topics:["binary tree","BFS","DFS","recursion"],tasks:["Solve 5 problems.","Implement recursive and iterative traversal.","Compare stack vs recursion."],challenge:"Explain memory complexity."},
+
+{d:40,w:6,t:"DSA — Mixed Interview Set",goal:"Solve unfamiliar problems.",topics:["pattern recognition"],tasks:["Solve 6 mixed problems.","Do not identify the topic beforehand.","Time yourself."],challenge:"Explain how you recognized each pattern."},
+
+{d:41,w:6,t:"Java Interview Deep Dive",goal:"Turn knowledge into explanations.",topics:["Collections","JVM","Streams","concurrency"],tasks:["Answer 30 Java questions aloud.","Write 5 answers from memory.","Debug 3 code snippets."],challenge:"Follow-up questions will target weak answers."},
+
+{d:42,w:6,t:"Week 6 Mock Interview",goal:"Simulate the real thing.",topics:["Java + DSA"],tasks:["45-minute mock interview.","1 coding problem.","10 Java questions.","1 concurrency scenario.","Review mistakes."],challenge:"No notes, no AI."},
+
+{d:43,w:7,t:"Spring Boot Interview Deep Dive",goal:"Explain internals behind your code.",topics:["DI","JPA","transactions","REST","exceptions"],tasks:["Answer 30 Spring questions.","Draw request lifecycle.","Explain bean lifecycle at a high level.","Debug 3 Spring snippets."],challenge:"Every answer must include a concrete example."},
+
+{d:44,w:7,t:"Security Interview Deep Dive",goal:"Own your JWT implementation.",topics:["JWT","OAuth concepts","CORS","CSRF","sessions"],tasks:["Explain your security architecture.","Draw JWT flow.","Explain token expiry.","Explain CORS vs CSRF.","Design refresh-token flow conceptually."],challenge:"No memorized definitions."},
+
+{d:45,w:7,t:"Angular Interview Deep Dive",goal:"Explain your frontend architecture.",topics:["signals","RxJS","forms","routing","performance"],tasks:["Answer 25 Angular questions.","Explain one complex component.","Refactor one component for maintainability."],challenge:"Explain why you chose signals/RxJS in specific places."},
+
+{d:46,w:7,t:"Project Interview Story",goal:"Turn your project into interview evidence.",topics:["STAR","architecture","trade-offs","debugging"],tasks:["Prepare project architecture diagram.","Prepare 5 difficult problems you solved.","Prepare one production bug story.","Prepare one performance improvement.","Prepare one disagreement/trade-off story."],challenge:"Answer 'Tell me about your project' in 3 minutes."},
+
+{d:47,w:7,t:"Resume Engineering",goal:"Make your experience measurable.",topics:["impact","ATS","project bullets"],tasks:["Rewrite experience bullets around what you built.","Quantify impact where truthful.","Remove generic responsibility-only bullets.","Align keywords with target roles."],challenge:"Every bullet should answer what you did and why it mattered."},
+
+{d:48,w:7,t:"Application Pipeline",goal:"Start/scale the actual switch.",topics:["job search","tracking","target companies"],tasks:["Create application tracker.","Define target role titles.","Create 3 resume variants if needed.","Apply to relevant roles.","Record interview questions from every interview."],challenge:"Do not wait for perfect preparation."},
+
+{d:49,w:7,t:"Week 7 Mock Full Stack Interview",goal:"Simulate a real 3-YOE interview.",topics:["Java","Spring","Angular","SQL","DSA"],tasks:["60-minute mock.","Coding question.","Spring scenario.","Angular scenario.","SQL query.","Project discussion."],challenge:"Identify top 5 weak areas afterward."},
+
+{d:50,w:8,t:"Weakness Repair #1",goal:"Attack your biggest technical gap.",topics:["personalized"],tasks:["Review your mock results.","Choose the weakest topic.","Build a mini feature using that topic.","Explain it without notes.","Retest yourself."],challenge:"No passive study."},
+
+{d:51,w:8,t:"Weakness Repair #2",goal:"Attack the second biggest gap.",topics:["personalized"],tasks:["Choose second weakness.","Build/debug something around it.","Write 10 interview questions.","Answer them aloud."],challenge:"Focus on depth rather than breadth."},
+
+{d:52,w:8,t:"Timed Coding Day",goal:"Build under realistic pressure.",topics:["Java","DSA"],tasks:["Solve 2 coding problems in 60 minutes.","Build one small Java feature in 45 minutes.","Review your code for edge cases.","Explain complexity."],challenge:"AI only after the timer ends."},
+
+{d:53,w:8,t:"Timed Full Stack Feature",goal:"Simulate real development.",topics:["Spring Boot + Angular"],tasks:["Take a new requirement.","Design API.","Implement backend.","Implement frontend.","Handle errors and validation.","Write tests."],challenge:"No tutorial; use documentation/AI only as reference after attempting."},
+
+{d:54,w:8,t:"Final Technical Mock",goal:"Find remaining gaps.",topics:["all technical areas"],tasks:["60–75 minute mock interview.","Java.","Spring Security.","JPA/SQL.","Angular.","DSA.","System design."],challenge:"Document every question you could not answer confidently."},
+
+{d:55,w:8,t:"Final Revision Through Code",goal:"Consolidate by rebuilding.",topics:["all"],tasks:["Rebuild JWT flow from memory.","Write one JPA relationship.","Write one Stream aggregation.","Write one Angular signal/computed example.","Solve one medium DSA problem.","Explain your architecture."],challenge:"No passive revision."},
+
+{d:56,w:8,t:"Switch Readiness Day",goal:"Be interview-ready, not syllabus-complete.",topics:["interview readiness"],tasks:["Run final mock.","Review project story.","Review resume.","Review top 50 questions generated from your weak areas.","Set weekly application/interview targets.","Create your next 30-day interview routine."],challenge:"The goal is confidence through evidence: code you built, bugs you fixed, and concepts you can explain."}
+];
+
+const storageKey="fullstack_switch_progress_v1";
+let state=JSON.parse(localStorage.getItem(storageKey)||"{}");
+let selected=Number(localStorage.getItem("selected_day")||1);
+
+function save(){localStorage.setItem(storageKey,JSON.stringify(state)); updateStats();}
+function updateStats(){
+ const checks=document.querySelectorAll(".task input"); let total=days.reduce((a,d)=>a+d.tasks.length,0),done=Object.values(state).filter(Boolean).length;
+ document.getElementById("completed").textContent=done; document.getElementById("total").textContent=total;
+ let pct=Math.round(done/total*100); document.getElementById("percent").textContent=pct+"%"; document.getElementById("bar").style.width=pct+"%";
+ document.getElementById("daystat").textContent="Day "+selected;
+}
+function renderWeeks(){
+ const el=document.getElementById("weeks"); el.innerHTML="";
+ for(let w=1;w<=8;w++){
+  let ds=days.filter(x=>x.w===w), done=ds.reduce((a,d)=>a+d.tasks.filter((_,i)=>state[d.d+"-"+i]).length,0), total=ds.reduce((a,d)=>a+d.tasks.length,0);
+  let div=document.createElement("div"); div.className="week"+(ds.some(x=>x.d===selected)?" active":"");
+  div.innerHTML=`<b>Week ${w}</b><small>${ds[0].t.split("—")[0]} • ${done}/${total} tasks</small>`;
+  div.onclick=()=>{selected=ds[0].d; localStorage.setItem("selected_day",selected);render();}; el.appendChild(div);
+ }
+}
+function render(){
+ renderWeeks();
+ const d=days.find(x=>x.d===selected)||days[0], el=document.getElementById("content");
+ el.innerHTML=`<div class="day-title"><div><h2>Day ${d.d} — ${d.t}</h2><div class="subtitle">${d.goal}</div></div><div class="badge">Week ${d.w}</div></div>
+ <div class="section"><h3>🎯 Topics to learn through today's build</h3><ul>${d.topics.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+ <div class="section"><h3>🛠️ Build Tasks</h3>${d.tasks.map((x,i)=>{let id=d.d+"-"+i;return `<div class="task ${state[id]?"done":""}"><input type="checkbox" id="${id}" ${state[id]?"checked":""} onchange="toggle('${id}')"><label for="${id}">${x}</label></div>`}).join("")}</div>
+ <div class="section"><h3>🧠 Depth Check</h3><div class="tip">${d.challenge}</div></div>
+ <div class="actions"><button onclick="prevDay()">← Previous</button><button onclick="nextDay()">Next Day →</button></div>`;
+ updateStats();
+}
+function toggle(id){state[id]=!state[id];save();render();}
+function prevDay(){if(selected>1){selected--;localStorage.setItem("selected_day",selected);render();}}
+function nextDay(){if(selected<56){selected++;localStorage.setItem("selected_day",selected);render();}}
+function resetAll(){if(confirm("Reset all progress?")){state={};save();render();}}
+render();
+</script>
+</body>
+</html>
