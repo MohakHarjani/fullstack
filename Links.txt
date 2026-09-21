@@ -11,5 +11,6 @@ https://1drv.ms/w/c/784e3ac1436f574d/IQAwkix-MBKfTLM-vz9uQfsEAVvOPddqCbpvnLC5blA
 
 Books:
 https://www.sietk.org/downloads/javabook.pdf
+https://1drv.ms/b/c/784e3ac1436f574d/IQCco6LiaCWfSZoGJSNu8b3zAZrcYKhvk4EzwTt8kBSKNik?e=fFJPAd
 https://kea.nu/files/textbooks/new/Effective%20Java%20%282017%2C%20Addison-Wesley%29.pdf
 
