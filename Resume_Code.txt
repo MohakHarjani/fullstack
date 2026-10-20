@@ -1,0 +1,214 @@
+%-------------------------
+% Resume in Latex
+% Author : Jake Gutierrez
+% Based off of: https://github.com/sb2nov/resume
+% License : MIT
+%------------------------
+
+\documentclass[letterpaper,11pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+\input{glyphtounicode}
+
+
+%----------FONT OPTIONS----------
+% sans-serif
+% \usepackage[sfdefault]{FiraSans}
+% \usepackage[sfdefault]{roboto}
+% \usepackage[sfdefault]{noto-sans}
+% \usepackage[default]{sourcesanspro}
+
+% serif
+% \usepackage{CormorantGaramond}
+% \usepackage{charter}
+
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-5pt}]
+
+% Ensure that generate pdf is machine readable/ATS parsable
+\pdfgentounicode=1
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-2pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubSubheading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \textit{\small#1} & \textit{\small #2} \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeProjectHeading}[2]{
+    \item
+    \begin{tabular*}{0.97\textwidth}{l@{\extracolsep{\fill}}r}
+      \small#1 & #2 \\
+    \end{tabular*}\vspace{-7pt}
+}
+
+\newcommand{\resumeSubItem}[1]{\resumeItem{#1}\vspace{-4pt}}
+
+\renewcommand\labelitemii{$\vcenter{\hbox{\tiny$\bullet$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=0.15in, label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-5pt}}
+
+%-------------------------------------------
+%%%%%%  RESUME STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+%----------HEADING----------
+% \begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+%   \textbf{\href{http://sourabhbajaj.com/}{\Large Sourabh Bajaj}} & Email : \href{mailto:sourabh@sourabhbajaj.com}{sourabh@sourabhbajaj.com}\\
+%   \href{http://sourabhbajaj.com/}{http://www.sourabhbajaj.com} & Mobile : +1-123-456-7890 \\
+% \end{tabular*}
+
+\begin{center}
+    \textbf{\Huge \scshape Mohak Harjani} \\ \vspace{2pt}
+    \small New Delhi, India $|$ 9654363693 $|$
+    \href{mailto:mh2001harjani@gmail.com}
+    {mh2001harjani@gmail.com} $|$
+    \href{https://www.linkedin.com/in/mohak-harjani-66b4b9194/}
+    {LinkedIn} $|$
+    \href{https://github.com/YOUR-GITHUB-USERNAME}
+    {GitHub} $|$
+    \href{https://leetcode.com/u/MohakHarjani/}
+    {LeetCode}
+\end{center}
+
+%-----------PROFESSIONAL SUMMARY-----------
+\section{Professional Summary}
+\small{
+Java Full Stack Developer with approximately 3 years of
+experience contributing to enterprise application development
+at Volkswagen Group Digital Solutions India. Experienced in
+Java, Spring Boot, Angular, frontend modernization, backend
+architecture migration, and application support. Contributed
+to migrating the KLIMA application's frontend to Angular 20,
+optimizing application performance, and transitioning the backend
+from a monolithic architecture to microservices. Previously
+supported 15+ Java applications across deployments and
+application- and database-level troubleshooting.
+}
+
+\section{Technical Skills}
+ \begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Programming Languages}{: Java, JavaScript, Python, C++} \\
+     \textbf{Backend Technologies}{: Spring Framework, Spring Boot, Spring Security, Microservices, Node.js, Express.js} \\
+    \textbf{Frontend Technologies}{: Angular, React, HTML, CSS} \\
+    \textbf{Databases}{: MySQL, Oracle, MongoDB, Apache Solr} \\
+     \textbf{Other}{: Docker, Git, Data Structures and Algorithm, Object Oriented Programming, System Design}
+    }}
+ \end{itemize}
+
+
+
+
+%-----------EXPERIENCE-----------
+\section{Professional Experience}
+  \resumeSubHeadingListStart
+
+    \resumeSubheading
+      {Volkswagen Group Digital Solutions India}{Nov 2023 -- Present}
+      {Software Engineer - Java Full Stack Developer}{Gurugram, Haryana}
+      \vspace{2pt}
+      \resumeItemListStart
+        \resumeItem{Developed and enhanced KLIMA, an enterprise License Management Platform, using Java, Spring Boot, Angular, and SQL, supporting software license tracking, cost calculation, and enterprise license-management workflows across 5000+ users and 1000+ license records.}
+        \resumeItem{Played a key role in migrating the application frontend to Angular 20, modernizing components and screens and improving frontend performance by 37\% through rendering and code optimization.}
+        \resumeItem{Integrated Apache Solr to implement full-text search and filtering, enabling efficient retrieval of relevant information across a large dataset.}
+        \resumeItem{Leveraged Java concurrency utilities to execute independent tasks concurrently and improve throughput in performance-sensitive backend workflows.}
+        \resumeItem{Developed an AI-powered Database Agent that converts natural language prompts into executable SQL queries using KLIMA database schemas and stored procedures, simplifying data retrieval and reducing manual effort for development and support teams.}
+        \resumeItem{Streamlined deployment and monitoring workflows through automation and process improvements, reducing manual effort by saving around 30-40 hours per week.}
+      \resumeItemListEnd
+
+
+  \resumeSubHeadingListEnd
+
+
+%-----------PROJECTS-----------
+\section{Projects}
+    \resumeSubHeadingListStart
+      \resumeProjectHeading
+          {\textbf{Incredible India} $|$ \emph{Java, Spring Boot, Angular, MySQL, Spring Security, JWT}}{}
+          \resumeItemListStart
+            \resumeItem{Engineered a full-stack tourism platform using Angular and Spring Boot, enabling users to discover destinations, explore detailed listings, and share travel experiences through ratings and reviews.}
+            \resumeItem{Implemented secure authentication and role-based authorization using Spring Security and JWT, protecting endpoints and restricting destination management operations to authorized users.}
+            \resumeItem{Integrated cloud-based image storage to support destination photo uploads, with backend validation and persistent image references for efficient retrieval.}
+          \resumeItemListEnd
+    \resumeSubHeadingListEnd
+
+
+%-----------EDUCATION-----------
+\section{Achievements}
+\resumeItemListStart
+ \resumeItem{Received Wall of Fame Award from Volkswagen India for delivering exceptional contributions to product development}
+ \resumeItem{Google Kickstart [2022] - Global Rank 1612 and TechGig Code Gladiators by Cognizant [2021] - Semi Finalist}
+ \resumeItem{Achieved a peak LeetCode contest rating of 1893 (max rating, Knight Badge)and rated amongst top 11\% coders all over the world}
+ \resumeItem{Over 4.3 lac views and 3000 upvotes on my Leetcode solution editorials}
+ \resumeItem{Solved over 1500 problems on coding platforms - Leetcode, GFG, Codeforces (Leetcode, GFG, Codeforces)}
+
+\resumeItemListEnd
+
+%-----------EDUCATION-----------
+\section{Education}
+  \resumeSubHeadingListStart
+    \resumeSubheading
+      {Bharati Vidyapeeth’s College of Engineering}{New Delhi}
+      {Bachelor of Technology in Information Technology}{Aug 2019 -- July 2023}
+    \resumeSubheading
+      {Goodley Public School}{New Delhi}
+      {CBSE – Class XII (PCM)}{March 2018 -- April 2019}
+    \resumeSubheading
+      {Goodley Public School}{New Delhi}
+      {CBSE – Class X}{April 2016 -- May 2017}
+  \resumeSubHeadingListEnd
+\end{document}
